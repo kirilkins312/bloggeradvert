@@ -1,0 +1,128 @@
+﻿@using Instadvert.CZ.Data.Static
+@model Instadvert.CZ.Data.ViewModels.TransactionVM
+
+<section class="mb-5 pb-5">
+    <div class="container1 px-5 py-4">
+        <div class="left-aligned mb-5">
+            <h1 class="clr-clssc">Transactions list</h1>
+            <h5>Here you can see all your transactions</h5>
+        </div>
+
+    </div>
+    @if (User.IsInRole("Blogger"))
+    {
+        <div class="container mt-4 ">
+            
+            @foreach (var transaction in @Model.Transactions)
+            {
+
+
+                var badgeClass = transaction.Status switch
+                {
+                    "Paid" => "bg-success text-white",
+                    "Created" => "bg-secondary text-white",
+                    "Success" => "bg-warning text-dark",
+                    _ => "bg-light text-dark"
+                };
+
+
+                <div class="transaction-card mb-3 p-3  rounded position-relative shadow">
+                    <span class="badge position-absolute top-0 start-0 mt-2 ms-2 @badgeClass">@transaction.Status</span>
+                    <div class="d-flex justify-content-between align-items-center pt-3">
+                        <div>
+                            <h5 class="mb-1">Amount: @transaction.Amount</h5>
+                            <p class="mb-1">Status: @transaction.Status</p>
+                            <p class="mb-1"><h8>Receiver: </h8><a class="nav-link-color ms-1" asp-controller="Account" asp-route-id="@transaction.TransactionBloggerUserId" asp-action="Details">Click....</a> </p>
+                            <p class="mb-1"><h8>Sender: </h8> <a class="nav-link-color ms-1" asp-controller="Account" asp-route-id="@transaction.TransactionCompanyUserId" asp-action="Details">Click....</a></p>
+                        </div>
+                        <div class="text-end">
+                            <p class="mb-1">Time: @transaction.Timestamp</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @if (User.IsInRole("Company"))
+    {
+        <div class="container mt-4 ">
+
+            @foreach (var transaction in @Model.Transactions)
+            {
+
+                var badgeClass = transaction.Status switch
+                {
+                    "Paid" => "bg-success text-white",
+                    "Created" => "bg-secondary text-white",
+                    "Success" => "bg-warning text-dark",
+                    _ => "bg-light text-dark"
+                };
+
+
+                <div class="transaction-card mb-3 p-3  rounded position-relative shadow">
+                    <span class="badge position-absolute top-0 start-0 mt-2 ms-2 @badgeClass">@transaction.Status</span>
+                    <div class="d-flex justify-content-between align-items-center pt-3">
+                        <div>
+                            <h5 class="mb-1">Amount: @transaction.Amount</h5>
+                            <p class="mb-1">Status: @transaction.Status</p>
+                            <p class="mb-1"><h8>Receiver: </h8><a class="nav-link-color ms-1" asp-controller="Account" asp-route-id="@transaction.TransactionBloggerUserId" asp-action="Details">Click....</a> </p>
+                            <p class="mb-1"><h8>Sender: </h8> <a class="nav-link-color ms-1" asp-controller="Account" asp-route-id="@transaction.TransactionCompanyUserId" asp-action="Details">Click....</a></p>
+                        </div>
+                        <div class="text-end">
+                            <p class="mb-1">Time: @transaction.Timestamp</p>
+                        </div>
+                        @if (transaction.Status == Status.Failed.ToString() || transaction.Status == Status.Created.ToString())
+                        {
+                            <a class="btn-nav px-2" asp-controller="Stripe" asp-route-transactionId="@transaction.TransactionId" asp-action="StripeCheckout">Pay</a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }@if (User.IsInRole("Admin"))
+    {
+        <div class="container mt-4 shadow">
+          
+            @foreach (var transaction in @Model.AllTransactions)
+            {
+
+                var badgeClass = transaction.Status switch
+                {
+                    "Paid" => "bg-success text-white",
+                    "Created" => "bg-secondary text-white",
+                    "Success" => "bg-warning text-dark",
+                    _ => "bg-light text-dark"
+                };
+
+
+                <div class="transaction-card mb-3 p-3  rounded position-relative shadow">
+                    <span class="badge position-absolute top-0 start-0 mt-2 ms-2 @badgeClass">@transaction.Status</span>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-1 mt-3"><strong>Amount:</strong> @transaction.Amount</p>
+                            <p class="mb-1"><strong>Status:</strong>  @transaction.Status</p>
+                            <p class="mb-1"><h8>Receiver: </h8><a class="nav-link-color ms-1" asp-controller="Account" asp-route-id="@transaction.TransactionBloggerUserId" asp-action="Details">Click....</a> </p>
+                            <p class="mb-1"><h8>Sender: </h8> <a class="nav-link-color ms-1" asp-controller="Account" asp-route-id="@transaction.TransactionCompanyUserId" asp-action="Details">Click....</a></p>
+                        </div>
+
+                        
+                        <div class="text-end">
+                            <p class="mb-1">Time: @transaction.Timestamp</p>
+                        </div>
+                        @if (transaction.Status == Status.Success.ToString())
+                        {
+                            <a class="btn-nav px-2" asp-controller="Stripe" asp-route-transactionId="@transaction.TransactionId" asp-action="CreateTransfer">Payout</a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    <div>
+
+        <a class="nav-link nav-link-color" asp-controller="Home" asp-action="Index">Back to main page</a>
+
+    </div>
+
+</section>

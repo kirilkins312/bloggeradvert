@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Identity;
+
+@inject UserManager<User> UserManager
+
+
+@if (User.Identity.IsAuthenticated == true)
+{
+    @await Html.PartialAsync("_StripeActivation")
+}
+<div class="container1 settings px-5 py-5 mt-5">
+    <div class="left-aligned mb-5">
+        <h1 class="">Settings</h1>
+        </div>
+    @{
+        string id = UserManager.GetUserId(User);
+
+        <a class="nav-link nav-link-color clr-white ps-0" asp-area="" asp-route-id="@id" asp-controller="Account" asp-action="EnableTwoFactor">2Factor</a>
+
+        <a class="nav-link nav-link-color clr-white ps-0" asp-area="" asp-route-id="@id" asp-controller="Account" asp-action="Details">Account</a>
+        if(User.IsInRole("Blogger"))
+        {
+            <a class="nav-link nav-link-color clr-white ps-0" asp-controller="Stripe" asp-action="StripeActivationPage" asp-route-Id="@id" method="get">Stripe</a>
+        }
+
+
+        <a class="nav-link nav-link-color clr-white ps-0" asp-controller="Account" asp-action="Edit" asp-route-Id="@id" method="get">Edit</a>
+
+        <a class="nav-link nav-link-color clr-white ps-0" asp-controller="Account" asp-action="ChangeEmail" asp-route-id="@id">Change email</a>
+
+        <a class="nav-link nav-link-color clr-white ps-0" asp-area="" asp-route-id="@id" asp-controller="Account" asp-action="Deactivate">Deactivate account</a>
+
+        <a class="nav-link nav-link-color clr-white ps-0" asp-controller="Account" asp-action="Logout" asp-route-Id="@id">Log out</a>
+      
+
+    }
+</div>
+

@@ -1,0 +1,17 @@
+﻿﻿@{
+    ViewData["Title"] = @ViewBag.Message;
+}
+<div class="row">
+    <div class="col-md-6">
+        <h1 class="clr-clssc">@ViewBag.Message</h1>
+        <form asp-action="ResendConfirmationEmail" asp-controller="Account" method="post">
+            <div class="form-group">
+                <input type="email" name="email" class="form-control" placeholder="Enter your email" required />
+            </div>
+            <br />
+            <div class="form-group">
+                <button class="btn-chat btn-20-width" type="submit">Resend</button>
+            </div>
+        </form>
+    </div>
+</div>

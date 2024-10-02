@@ -1,0 +1,13 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model Instadvert.CZ.Data.ViewModels.TransactionVM;
+
+@inject UserManager<User> UserManager
+
+
+<div class="m-5">
+    <h1 class="clr-clssc mb-4">Your payment has been successfully processed.</h1>
+    <h5 class="">  <a class="nav-link nav-link-color" asp-area="" asp-route-id="@UserManager.GetUserId(User)" asp-controller="Stripe" asp-action="TransactionsList">You can check your transaction status here...</a></h5>
+</div>
+
+
+    

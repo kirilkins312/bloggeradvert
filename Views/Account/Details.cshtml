@@ -1,0 +1,208 @@
+﻿@model Instadvert.CZ.Data.ViewModels.UserVM
+
+@using Microsoft.AspNetCore.Identity;
+
+@inject UserManager<User> UserManager
+
+
+<section class="p-md-5 p-2 mx-4 ">
+    @if(Model.SelectedRole == "Blogger")
+    {
+        
+        string id = UserManager.GetUserId(User);
+        
+        <div class=" d-md-flex col ">
+            <div class="bloggr-card mb-md-0 mb-3 mx-md-0 mx-auto">
+                <div class="bg-custom-gray details-profile-picture h-10 align-content-center mx-auto">
+                    <img class="chat-pf" src="@(string.IsNullOrEmpty(Model.CoverImageUrl) ? "/images/noimage.png" : Model.CoverImageUrl)" />
+                </div>
+
+                <h1 class="text-center mt-4">@Model.FirstName @Model.LastName</h1>
+                <h5 class="text-center clr-clssc mt-2">@Model.InstagramUsername</h5>
+            </div>
+            <div class="ms-md-5 ps-md-5 mx-2 mt-2 flex-fill ">
+                <div class="d-flex gap-md-5 gap-4 mx-md-0 mx-auto pt-md-0 pt-2 justify-content-center">
+                    <div class="">
+                        <h1 class="text-center">@Model.InstagramFollowers</h1>
+                        <h6 class="clr-clssc text-center">Followers</h6>
+                    </div>
+                    <div>
+                        <h1 class="text-center">@Model.InstagramFollowers</h1>
+                        <h6 class="clr-clssc text-center">Publications</h6>
+                    </div>
+                </div>
+                <div class="mt-md-5 p-2 ps-0">
+                    <h6 class="text-center">@Model.Description</h6>
+                    <div class="mt-md-5 mt-2">
+                        @foreach (var category in Model.CategoryList)
+                        {
+                            <h8 class="clr-clssc me-3">@category.Name</h8>
+                        }
+
+                    </div>
+
+                    <div class="d-flex mt-md-5 mt-2 ">
+                        <div class="d-flex align-items-center justify-content-center me-5">
+                            <a class="p-3 cntct-link">Contact</a>
+                        </div>
+                        @if(!User.IsInRole("Blogger"))
+                        {
+                            <form asp-controller="Chat" asp-action="Chat" asp-route-yourId="@id" asp-route-oppId="@Model.Id">
+                            <button class="btn-chat px-3 py-2 my-md-5 my-2">Chat</button>
+                        </form> 
+                        }
+                        
+                    </div>
+                </div>
+                <div class="border-top p-md-5 p-1">
+                    <h3 class=" mb-md-5 mb-3 mt-2 fw-bold">Personal info</h3>
+                    <div class="d-sm-flex justify-content-between">
+                        <div>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">Fullname:</h8> @Model.FirstName @Model.LastName</h8></p>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">Country:</h8> @Model.Country</h8></p>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">City:</h8> @Model.City</h8></p>
+                        </div>
+                        <div>
+                            @{
+                                var year = DateTime.Now.Year;
+                                var age = year - Model.Year;
+                            }
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">Age:</h8>@age</h8></p>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">Phone number:</h8>@Model.PhoneNumber</h8></p>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">Email:</h8> @Model.Email</h8></p>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="border-top p-md-5 p-1">
+                    <h3 class="mb-md-5 mb-3 mt-2 fw-bold">Bussiness info</h3>
+                    <div class="d-sm-flex  justify-content-between">
+                        <div>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">Name:</h8> @Model.BussinessName</h8></p>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">Product description:</h8> @Model.ProductDescription</h8></p>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">URL:</h8> @Model.Url</h8></p>
+                        </div>
+                        <div>
+
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">Support phone:</h8> @Model.SupportPhone</h8></p>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+                @{
+                   
+                    @if (id == Model.Id || User.IsInRole("Admin"))
+                    {
+
+                        <div class="mb-5 p-5 pt-0 gap-3 d-flex">
+
+
+                            <form asp-controller="Account" asp-action="Edit" asp-route-Id="@Model.Id" method="get">
+                                <button class="btn-chat px-3 py-2 my-5">Edit</button>
+                            </form>
+                            <form asp-controller="Stripe" asp-action="StripeActivationPage" asp-route-Id="@Model.Id" method="get">
+                                <button class="btn-chat px-3 py-2 my-5">Activate Stripe</button>
+                            </form>
+                            <div class="d-flex align-items-center justify-content-center">  <a class="cntct-link" asp-controller="Home" asp-action="Index">Back to List</a></div>
+
+
+                        </div>
+
+                    }
+                    if (User.IsInRole("Admin"))
+                    {
+
+                        <div class="mb-5 p-5 pt-0 gap-3 d-flex">
+
+
+                            <form asp-controller="Account" asp-action="Edit" asp-route-Id="@Model.Id" method="get">
+                                <button class="btn-chat px-3 py-2 my-5">Edit</button>
+                            </form>
+                            <form asp-controller="Stripe" asp-action="StripeActivationPage" asp-route-Id="@Model.Id" method="get">
+                                <button class="btn-chat px-3 py-2 my-5">Activate Stripe</button>
+                            </form>
+                            
+
+
+                        </div>
+
+                    }
+                }
+
+
+            </div>
+        </div>
+    }
+    @if (Model.SelectedRole == "Company")
+    {
+        string id = UserManager.GetUserId(User);
+
+        <div class="d-md-flex col">
+            <div class="bloggr-card mb-md-0 mb-3 mx-md-0 mx-auto">
+                <div class="bg-custom-gray details-profile-picture h-10 align-content-center mx-auto">
+                    <img class="chat-pf" src="~/Images/front-dev/download.png" />
+                </div>
+
+                <h1 class="text-center mt-4">@Model.FirstName @Model.Name</h1>
+                <h5 class="text-center clr-clssc mt-2">@Model.InstagramUsername</h5>
+            </div>
+            <div class="ms-md-5 ps-md-5 mx-2 mt-2 flex-fill">
+               
+                <div class="mt-md-2 p-2 ps-0">
+                    <div class="mt-md-5">
+                        <h3 class="mb-md-5 mb-3 mt-2 fw-bold">Company</h3>
+                    </div>
+
+                    <div class="d-flex mt-md-5 mt-2">
+                       
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <form asp-controller="Chat" asp-action="Chat" asp-route-yourId="@id" asp-route-oppId="@Model.Id">
+                                <button class="btn-chat px-3 py-2 my-md-5 my-2">Chat</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+                <div class="border-top p-md-5 p-1">
+                    <h3 class="mb-md-5 mb-3 mt-2 fw-bold">Personal info</h3>
+                    <div class="d-sm-flex justify-content-between">
+                        <div>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">Phone number:</h8> @Model.PhoneNumber</h8></p>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">Email:</h8> @Model.Email</h8></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-top p-md-5 p-1">
+                    <h3 class="mb-md-5 mb-3 mt-2 fw-bold">Business info</h3>
+                    <div class="d-sm-flex justify-content-between">
+                        <div>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">Name:</h8> @Model.Name</h8></p>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">Product description:</h8> @Model.Description</h8></p>
+                            <p class="mb-2"><h8><h8 class="clr-clssc me-1">URL:</h8> @Model.Url</h8></p>
+                        </div>
+                    </div>
+                </div>
+
+                @if (id == Model.Id || User.IsInRole("Admin"))
+                {
+                    <div class="mb-5 p-5 pt-0 gap-3 d-flex">
+                        <form asp-controller="Account" asp-action="Edit" asp-route-Id="@Model.Id" method="get">
+                            <button class="btn-chat px-3 py-2 my-5">Edit</button>
+                        </form>
+                      
+                        <div class="d-flex align-items-center justify-content-center">
+                            <a class="cntct-link" asp-controller="Home" asp-action="Index">Back to List</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    
+</section>
+
+

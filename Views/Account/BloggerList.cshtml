@@ -1,0 +1,163 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model Instadvert.CZ.Data.ViewModels.FilterVM
+
+@inject UserManager<User> UserManager
+
+
+
+<style>
+    
+</style>
+@if (Model.blogUsers.Where(x => x.StripeAccActivated).Count() <= 0)
+{
+    <div class="m-5">
+        <h1 class="clr-clssc mb-4">There are no bloggers at the moment</h1>
+
+    </div>
+
+}
+else
+{
+
+    <section class="p-4 pb-5">
+        @*   <h1 class="clr-clssc mb-5 pb-2">Our bloggers</h1> *@
+
+        <div class="d-xl-flex ">
+            <div>
+                <a class="nav-link nav-link-color" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarToggle" aria-expanded="false" aria-controls="sidebarToggle">
+                    Toggle Filters
+                </a>
+
+                <div class="sidebar collapse p-3 pt-md-3 pt-0  " id="sidebarToggle">
+                    <form asp-controller="Account" asp-action="BloggerList" method="post" class="pt-0">
+                        <div class="d-flex flex-xl-column flex-wrap justify-content-center">
+
+                            <!-- Search by Name Section -->
+                            <div class="p-3 border border-light-subtle rounded mb-3 w-100">
+                                <label for="searchName" class="form-label h6">Search by Name</label>
+                                <input id="searchName" class="form-control" type="text" name="searchString" placeholder="Name">
+                            </div>
+
+                            <!-- Search by Followers Section -->
+                            <div class="p-3 border border-light-subtle rounded mb-3 w-100">
+                                <label for="searchFollowers" class="form-label h6">Search by Followers</label>
+                                <div class="row gx-2">
+                                    <div class="col-6">
+                                        <input id="searchFollowersTop" class="form-control" type="text" name="searchStringTop" placeholder="Top border">
+                                    </div>
+                                    <div class="col-6">
+                                        <input id="searchFollowersBottom" class="form-control" type="text" name="searchStringBottom" placeholder="Bottom">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Categories Section -->
+                            <div class="p-3 border border-light-subtle rounded mb-3 w-100">
+                                <label class="form-label h6">Categories</label>
+                                <div class="row">
+                                    @foreach (var option in Model.CategoryList)
+                                    {
+                                        <div class="col-6 col-sm-4 col-md-6 col-lg-6 col-xl-12 mb-2">
+                                            <div class="form-check">
+                                                <input asp-for="@option.IsChecked" type="checkbox" value="@option.CategoryId" name="SelectedCategories" id="category-@option.CategoryId" class="form-check-input" />
+                                                <label class="form-check-label" for="category-@option.CategoryId">
+                                                    @option.Name
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Admin Action Section -->
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="w-100 text-center mb-3">
+                                    <a asp-action="Create" class="btn btn-primary">Create New</a>
+                                </div>
+                            }
+
+                            <!-- Submit Button -->
+                            <div class="w-100 text-center">
+                                <input class="btn-chat p-2 px-3" type="submit" value="Search">
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+
+            <div class="mt-4 flex-fill px-3">
+
+
+
+                @foreach (var item in Model.blogUsers)
+                {
+                    var blogUser = item as BloggerUser;
+                    var id = UserManager.GetUserId(User);
+                    if (User.IsInRole("Admin") ||
+                    (User.IsInRole("Company") && !blogUser.AccountDeactivated && blogUser.StripeAccActivated) ||
+                    User.IsInRole("Blogger") && !blogUser.AccountDeactivated && blogUser.StripeAccActivated && item.Id != id)
+                    {
+                        <a class="me-2 nav-link-color" asp-action="Details" asp-route-id="@item.Id">
+                            <div id="blg-card" class="d-flex  p-xl-3 p-2 shadow rounded-3">
+                                <div class="bg-custom-gray list-profile-picture h-10 align-content-center my-auto">
+                                    <img class="chat-pf" src="@(string.IsNullOrEmpty(item.CoverImageUrl) ? "/images/noimage.png" : item.CoverImageUrl)" />
+                                </div>
+                                <div class="">
+                                    <div style="color:black;" class="d-flex ">
+                                        <div class="ms-2 ps-4 pt-2 ">
+                                            <h4 class="m-0">@Html.DisplayFor(modelItem => item.FirstName)</h4>
+                                        </div>
+                                        <div class="ps-2 pt-2 ">
+                                            <h4 class="m-0">@Html.DisplayFor(modelItem => item.LastName)</h4>
+                                        </div>
+                                    </div>
+                                    @{
+                                        var year = DateTime.Now.Year;
+                                        var age = year - item.Year;
+                                    }
+                                    <div class="d-flex">
+                                        <p class="mb-xl-2 mb-0 secondary-color">
+                                            <h8 class=" ms-2 ps-4 me-5
+font-2">@age years old  </h8>
+                                        </p>
+
+
+                                    </div>
+                                    <div class="ms-2 ps-4">
+
+                                        @foreach (var category in item.Categories)
+                                        {
+                                            <h8 class="clr-clssc me-3 font-2">@category.Name</h8>
+                                        }
+                                    </div>
+                                    <div class="ms-2 mt-xl-2  ps-4">
+                                        <h8 class="font-2 text-container secondary-color">Biography: @item.Biography</h8>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </a>
+
+
+
+
+
+
+                    }
+                }
+
+
+            </div>
+
+        </div>
+
+
+
+    </section>
+}

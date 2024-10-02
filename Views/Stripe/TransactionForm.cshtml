@@ -1,0 +1,110 @@
+﻿@using Instadvert.CZ.Data.ViewModels;
+@model TransactionVM
+
+
+
+
+
+
+
+
+
+
+@if (TempData["Error"] != null)
+{
+    <div class="col-md-3 alert alert-danger mx-auto">
+        <span><b>Sorry!</b> - @TempData["Error"] </span>
+    </div>
+}
+
+
+<div class="container1 px-5 py-4">
+    <div class="left-aligned mb-5">
+        <h1 class="clr-clssc">Create your transaction request</h1>
+        <h5>Here you can easily create transaction request and send it.</h5>
+    </div>
+    <div class="right-aligned mb-5">
+        <h1 class="clr-clssc">Customer will receive your request</h1>
+        <h5>After creating request, customer will be able to pay you</h5>
+    </div>
+</div>
+
+
+
+@* <div class="right-aligned">
+    <h1 class="clr-clssc">Thank you, for your patience</h1>
+    <h5>We will let you know about next steps!</h5>
+</div> *@
+<section class="bg-custom-gray my-5">
+    <div class="container">
+        <div class="col-md-9 mx-auto">
+            <form asp-action="TransactionForm" enctype="multipart/form-data">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+              
+
+                <div id="companyForm">
+
+                    <div class="form-group mb-4">
+                        <h6 class="mb-2">Enter amount</h6>
+                        <input min="15" placeholder="Enter amount" asp-for="Amount" class="form-control" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group">
+                        <h6 class="mb-2">Write some description here</h6>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+
+                   
+                    <div class="form-group">
+                        
+                        <input type ="hidden" asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                      
+                        <input type="hidden" asp-for="TransactionBloggerUserStripeId" class="form-control" />
+                        <span asp-validation-for="TransactionBloggerUserStripeId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        
+                        <input type="hidden" asp-for="TransactionBloggerUserId" class="form-control" />
+                        <span asp-validation-for="TransactionBloggerUserId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                       
+                        <input type="hidden" asp-for="TransactionCompanyUserId" class="form-control" />
+                        <span asp-validation-for="TransactionCompanyUserId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                      
+                        <input type="hidden" asp-for="Status" class="form-control" />
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                      
+                        <input type="hidden" asp-for="Timestamp" class="form-control" />
+                        <span asp-validation-for="Timestamp" class="text-danger"></span>
+                    </div>
+                   
+                    
+
+                <div id="create" class="form-group">
+                        <input type="submit" value="Send" class="btn-abt-us px-3 py-2 my-5" />
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+</section>

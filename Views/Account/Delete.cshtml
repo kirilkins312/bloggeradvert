@@ -1,0 +1,14 @@
+﻿
+@model string
+
+<div class="container1 px-5 py-5 mt-5">
+    <h3 class="clr-clssc mb-4">Are u sure?</h3>
+
+
+    @ViewBag.ErrorMessage
+
+
+
+    <a class="nav-link-color" asp-area="" asp-route-id="@Model" asp-controller="Account" asp-action="DeleteConfirmed">Delete account</a>
+
+</div>

@@ -1,0 +1,116 @@
+﻿@using Microsoft.AspNetCore.Identity;
+
+@inject UserManager<User> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Instadvert.CZ</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Instadvert.CZ.styles.css" asp-append-version="true" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+
+    
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-light bg-white border-bottom box-shadow container-xl">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-xl-5" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/Images/front-dev/instadvert-logo.jpg" alt="Instadvert.CZ Logo" style="height: 40px;"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div  class="navbar-collapse collapse d-lg-inline-flex justify-content-between mx-5">
+                    @{string id = UserManager.GetUserId(User);}
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-color" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-color" asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-color" asp-area="" asp-controller="Blogs" asp-action="Index">Blogs</a>
+                        </li>
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-color" asp-area="" asp-route-id="@id" asp-controller="Chat" asp-action="ChatList">Chat</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-color" asp-area="" asp-controller="Account" asp-action="BloggerList">Bloggers</a>
+                            </li>
+
+                        }
+                        <li class="nav-item my-auto ms-auto" id="identity">
+                            <partial name="_Identity.cshtml">
+                        </li>
+                      
+                    </ul>
+                </div>  
+                
+              
+            </div>
+
+        </nav>
+      
+    </header>
+    <div id="content-cont" class="container-xl p-0">
+        <main role="main" class="">
+            @RenderBody()
+        </main>
+    </div>
+
+
+    <footer style="background-color: rgb( 255, 95, 95); color:white !important;" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 py-5  mb-0  border-top mx-auto container-xl custom-rounded ">
+                
+
+                <div class="col mb-3">
+                    <p href="/" class="d-flex align-items-center mb-3 link-dark text-decoration-none">
+                <p class="ftr-name">Instadvert</p>
+                    </p>
+                    <p class="">© 2024</p>
+                </div>
+
+        <div class="col mb-3 d-block d-md-none">
+          
+        </div>
+                <div class="col mb-3">
+                    <h3 class="mb-md-5 mb-3 fw-bold">Information</h3>
+                    <ul class="nav flex-column">
+                <li class="nav-item mb-md-2 mb-1"><p>Privacy</p></li>
+                <li class="nav-item mb-md-2 mb-1"><p>About us</p></li>
+                <li class="nav-item mb-md-2 mb-1"><p>Stripe </p></li>
+                        
+                    </ul>
+                </div>
+        <div class="col mb-3">
+            <h3 class="mb-md-5 mb-3 fw-bold">Contacts</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-md-2 mb-1"><p>Email: Instadvert@gmail.com</p></li>
+                <li class="nav-itemmb-md-2 mb-1"><p>Phone: +420 123 123 123</p></li>
+                <li class="nav-item mb-md-2 mb-1"><p>Address: Sokolovska 134/45 </p></li>
+
+            </ul>
+        </div>
+
+        
+            </footer>
+       
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

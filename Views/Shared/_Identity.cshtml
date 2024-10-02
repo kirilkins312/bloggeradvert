@@ -1,0 +1,93 @@
+﻿@using Microsoft.AspNetCore.Identity;
+
+@inject UserManager<User> UserManager
+
+@if (!User.Identity.IsAuthenticated)
+{
+
+    <ul class="nav" id="registerNav">
+        <li class="nav-item ">
+            <a class="nav-link nav-link-color me-2" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link nav-link-color link-body-emphasis " asp-area="" asp-controller="Account" asp-action="Registration">Register </a>
+        </li>
+    </ul>
+   
+}
+else
+{
+    <ul class="navbar-nav flex-grow-1">
+        
+        <div class="dropdown ">
+            <button class="btn-nav align-content-center px-0 dropdown-toggle" type="button" id="profile-btn" data-toggle="dropdown"
+                    aria-expanded="false">
+                Hello @UserManager.GetUserName(User)
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="profile-btn">
+
+               
+                
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-color" asp-area="" asp-controller="Account" asp-action="BloggerList">Bloggers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-color" asp-area="" asp-controller="Account" asp-action="CompanyList">Companies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-color" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-color" asp-area="" asp-controller="Blogs" asp-action="Index">Blogs</a>
+                    </li>
+
+                }
+                @{
+                    string id = UserManager.GetUserId(User);
+                  
+                <li class="nav-item">
+                        <a class="nav-link nav-link-color" asp-area="" asp-route-id="@UserManager.GetUserId(User)" asp-controller="Settings" asp-action="Index">Settings</a>
+                </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-color" asp-area="" asp-route-id="@UserManager.GetUserId(User)" asp-controller="Stripe" asp-action="TransactionsList">Transactions</a>
+                    </li>
+                  
+                }
+               
+                
+                   @*  <form asp-controller="Account" asp-action="Logout">
+                        <button class="btn   my-2 my-sm-0">
+                        <i class="bi bi-box-arrow-in-right"></i> Log out
+                    </button>
+                </form> *@
+                
+            </ul>
+        </div>
+
+
+
+
+
+    </ul>
+}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.dropdown-toggle').forEach(function (dropdownToggle) {
+            dropdownToggle.addEventListener('click', function () {
+                var dropdownMenu = this.nextElementSibling;
+                if (dropdownMenu.classList.contains('show')) {
+                    dropdownMenu.classList.remove('show');
+                    this.setAttribute('aria-expanded', 'false');
+                } else {
+                    dropdownMenu.classList.add('show');
+                    this.setAttribute('aria-expanded', 'true');
+                }
+            });
+        });
+    });
+</script>
+
+

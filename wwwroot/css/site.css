@@ -1,0 +1,679 @@
+
+
+
+body {
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    min-height: 100vh; /* Ensures the minimum height is the full viewport height */
+}
+
+
+
+@media (max-width: 1200px) {
+    #content-cont {
+        min-height: 90vh !important;
+    }
+    .overlay-text {
+        font-size: 4rem !important;
+    }
+
+    .btn-abt-us {
+        font-size: 15px !important;
+    }
+
+    .btn-main {
+        font-size: 15px !important;
+    }
+    .btn-activate {
+        font-size: 15px !important;
+    }
+    .btn-nav {
+        font-size: 15px !important;
+    }
+    h1 {
+        font-size: 30px;
+    }
+
+    h3 {
+        font-size: 20px;
+    }
+
+    .nav-link {
+        font-size: 15px !important;
+    }
+
+    .dropdown-menu {
+        border: none;
+        box-shadow: none; /* Remove any default shadow */
+    }
+
+        /* Remove border from individual dropdown items */
+        .dropdown-menu .dropdown-item {
+            border: none;
+        }
+
+    .sidebar {
+        max-width: 100% !important;
+    }
+
+    .filter-inp {
+        max-width: 10rem !important;
+    }
+
+    .checkbox {
+        max-width: 30rem !important;
+    }
+
+    .filter-inp {
+        font-size: 13px;
+        padding: 5px;
+    }
+
+    label {
+        font-size: 13px !important;
+    }
+
+    .text-container {
+        max-width: 30rem !important;
+    }
+
+    h4 {
+        font-size: 18px !important;
+    }
+
+    h8 {
+        font-size: 13px !important;
+    }
+
+    .list-profile-picture {
+
+        width: 6rem !important; /* Set the desired size */
+        height: 6rem !important; /* Set the desired size */
+    }
+    #sendButton{
+       font-size:15px !important;
+    }
+}
+
+
+@media (max-width: 992px) {
+
+    #content-cont {
+        min-height: 80vh !important;
+    }
+    .overlay-text {
+        font-size: 4rem !important;
+    }
+
+    .btn-main {
+        font-size: 15px !important;
+    }
+    .btn-abt-us {
+        font-size: 15px !important;
+    }
+    .btn-activate {
+        font-size: 15px !important;
+    }
+    .btn-nav {
+        font-size: 15px !important;
+    }
+
+
+    h1 {
+        font-size: 23px;
+    }
+
+    h3 {
+        font-size: 13px;
+    }
+
+    h5{
+        font-size:12px;
+    }
+
+    h8 {
+        font-size: 13px;
+    }
+
+    .nav-link {
+        font-size: 15px !important;
+    }
+
+    #identity {
+        margin: 0 !important;
+    }
+
+    .nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cntct-form {
+        max-width: 25rem !important;
+        margin-right: auto !important;
+        margin-left: auto !important;
+        padding-left: 0 !important;
+    }
+    label {
+        font-size: 11px !important;
+    }
+
+    .form-control {
+        font-size: 12px !important;
+        padding: 5px;
+    }
+    .chat-pf {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: cover;
+    }
+    .chat-profile-picture {
+        width: 4rem !important; /* Set the desired size */
+        height: 4rem !important; /* Set the desired size */
+    
+    }
+    .nav-link-color{
+        font-size:15px !important;
+    }
+    #sendButton {
+        font-size: 12px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    #content-cont {
+        min-height: 70vh !important;
+    }
+    html {
+        font-size: 16px;
+    }
+    .col-md {
+        flex-direction: column;
+    }
+    .btn-main {
+     
+        font-size:12px !important;
+    }
+    .btn-abt-us {
+        font-size: 12px !important;
+    }
+    .btn-activate {
+        font-size: 12px !important;
+    }
+    .btn-nav {
+        font-size: 12px !important;
+    }
+
+    .overlay-text {
+        font-size: 3rem !important;
+    }
+
+    h1 {
+        font-size: 23px;
+    }
+
+    h3 {
+        font-size: 13px;
+    }
+    h4 {
+        font-size: 13px !important;
+    }
+
+    h8 {
+        font-size: 8px !important;
+    }
+   p{
+       font-size:10px !important;
+   }
+    .text-container {
+        max-width: 20rem !important;
+    }
+    .form-control {
+        font-size: 10px !important;
+        padding:3px;
+       
+    }
+
+    .nav-link-color {
+        font-size: 12px !important;
+    }
+    
+}
+
+
+@media (max-width: 576px) {
+    
+    .overlay-text {
+        font-size: 2rem !important;
+    }
+    .btn-main {
+        font-size: 9px !important;
+    }
+    .btn-abt-us {
+        font-size: 9px !important;
+    }
+    .btn-activate {
+        font-size: 9px !important;
+    }
+    .btn-nav {
+        font-size: 9px !important;
+    }
+
+    h1{
+        font-size:15px;
+    }
+    h3 {
+        font-size: 10px;
+    }
+    h6{
+        font-size:9px;
+    }
+    form {
+        
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    .form-control {
+        font-size: 8px !important;
+        padding: 5px;
+    }
+
+    .btn-abt-us {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+    .box-4{
+        max-width:100% !important;
+    }
+    p{
+        margin-bottom:5px !important;
+    }
+    .details-profile-picture {
+        width: 5rem !important;
+        height: 5rem !important;
+    }
+    .cntct-link {
+        font-size: 9px !important;
+    }
+    .btn-chat {
+
+        font-size: 9px !important
+    }
+    .nav-link {
+        font-size: 10px !important;
+    }
+    .text-container {
+        max-width: 10rem !important;
+    }
+    .list-profile-picture {
+        width: 5rem !important; /* Set the desired size */
+        height: 5rem !important; /* Set the desired size */
+    }
+    label {
+        font-size: 8px !important;
+    }
+    .form-control {
+        font-size: 9px !important;
+        padding: 2px;
+        
+    }
+    .form-check-input {
+        margin-top:9px !important;
+        width: 10px !important;
+        height: 10px  !important;
+
+    }
+    .chat-profile-picture {
+        width: 3rem !important; /* Set the desired size */
+        height: 3rem !important; /* Set the desired size */
+    }
+    #sendButton {
+        font-size: 9px !important;
+    }
+}
+
+
+@media (max-width: 1400px) {
+   
+}
+
+
+
+#profile-btn:focus {
+    outline: none;
+    box-shadow: none; /* This removes any shadow that may appear */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+   
+    min-height: 100vh; /* Ensures the minimum height is the full viewport height */
+}
+
+.nav-link-color {
+    color: rgb(255, 99, 99) !important;
+    text-decoration:none; !important;
+}
+
+.cntct-link{
+    color: rgb(255, 99, 99) !important;
+    text-decoration: none !important;
+ 
+
+}
+
+.main-img {
+    max-width: 100%;
+ 
+}
+
+
+.main-img-box {
+    position: relative;
+    text-align: center;
+}
+
+
+.btn-main {
+    border: none;
+    background: white;
+    color: rgb( 255, 95, 95);
+    font-weight: bold;
+    border-radius: 8px;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.btn-abt-us {
+    border: none;
+    background-color:white;
+    color: rgb( 255, 95, 95);
+    font-weight: bold;
+    border-radius: 8px;
+    width:100%;
+    
+    
+}
+    .btn-abt-us:hover {
+        background-color: rgb( 255, 95, 95);
+        color: white;
+    }
+
+
+.btn-chat {
+    border: none;
+    background-color: rgb( 255, 95, 95);
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+ 
+}
+
+    .btn-chat:hover {
+        background-color:white;
+        color: rgb( 255, 95, 95);
+    }
+
+.box-4{
+    max-width:4rem;
+}
+.box-main-text {
+    max-width: 26rem;
+    background-color:rgb( 255, 95, 95,.1);
+    
+}
+
+.cntct-us {
+    background-color: rgb( 255, 95, 95);
+    color: white;
+    border-radius: 15px;
+}
+.cntct-info{
+    max-width: 10rem;
+    
+}
+.cntct-form {
+    max-width:30rem;
+    width:100%;
+}
+
+.img-blog-box{
+    max-width:10rem;
+}
+
+.chat-pf {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.chat-profile-picture {
+    width: 5rem; /* Set the desired size */
+    height: 5rem; /* Set the desired size */
+    border-radius: 50%; /* Make it a circle */
+    overflow: hidden; /* Hide the overflow of the image */
+    display: flex; /* Center the image */
+    justify-content: center; /* Center the image */
+    align-items: center; /* Center the image */
+}
+.details-profile-picture {
+    width: 15rem; /* Set the desired size */
+    height: 15rem; /* Set the desired size */
+    border-radius: 50%; /* Make it a circle */
+    overflow: hidden; /* Hide the overflow of the image */
+    display: flex; /* Center the image */
+    justify-content: center; /* Center the image */
+    align-items: center; /* Center the image */
+}
+.list-profile-picture {
+    width: 8rem; /* Set the desired size */
+    height: 8rem; /* Set the desired size */
+    border-radius: 5%;
+    overflow: hidden; /* Hide the overflow of the image */
+    display: flex; /* Center the image */
+    justify-content: center; /* Center the image */
+    align-items: center; /* Center the image */
+}
+
+
+.bg-clssc {
+    background-color: rgb( 255, 95, 95);
+}
+.clr-clssc {
+   color: rgb( 255, 95, 95);
+}
+.clr-white {
+   color:white !important;
+}
+
+
+
+
+.mssg-box{
+    max-width:45rem;
+}
+.mssg-input{
+    width:100;
+    max-width:150rem;
+}
+
+.messages-container {
+    max-height: 40rem; /* Adjust the height as needed */
+    overflow-y: auto; /* Allows vertical scrolling */
+}
+
+
+.container1 {
+    display: flex; /* Enable Flexbox layout */
+    flex-direction: column; /* Stack items vertically */
+}
+
+.left-aligned {
+    /* This section will align to the left by default */
+}
+
+.right-aligned {
+    margin-top: auto; /* Pushes this div to the bottom */
+    text-align: right; /* Aligns text to the right */
+}
+
+.sidebar{
+    max-width:15rem;
+}
+
+.blgr-box{
+    max-width:100rem;
+    width:100%;
+}
+
+.bloggr-card{
+    max-width:20rem;
+    width:100%;
+}
+
+.secondary-color {
+    color: rgb(84, 84, 84) !important;
+}
+
+.font-2{
+    font-size:15px;
+}
+
+.text-container {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width:40rem;
+}
+
+#blg-card:hover {
+    transition: box-shadow 0.3s ease-in-out; /* Smooth transition */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Default shadow */
+}
+
+.btn-activate {
+    text-align:center;
+    color: white !important;
+    text-decoration: none;
+    max-width: 15rem;
+    background-color: rgb( 255, 95, 95);
+    border: none;
+    font-weight: bold;
+    border-radius: 8px;
+    width: 100%;    
+}
+    .btn-activate:hover {
+        color: rgb( 255, 95, 95) !important;
+        background-color: white;
+    }
+ .btn-20-width{
+     max-width:20rem;
+ }
+.btn-15-width {
+    max-width: 15rem;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.custom-rounded-bottom {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.Home {
+    position: relative;
+    overflow: hidden; /* Ensures content doesn’t overflow */
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.main-img {
+    width: 100%;
+    height: auto; /* Keeps aspect ratio */
+    display: block; /* Removes space below image */
+}
+
+.overlay-text {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 2rem; /* Adjust as needed */
+    text-align: center;
+    z-index: 10; /* Ensures it stays on top */
+    color: white;
+    font-size: 6rem; /* Adjust as needed */
+    font-weight: bold;
+}
+
+.btn-main {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 60%;
+    z-index: 10; /* Ensures it stays on top */
+}
+
+.ftr-name {
+    font-size: 20px;
+    font-weight: bold;
+}
+.custom-rounded {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.gray {
+    color: rgb(117, 117, 117);
+}
+.btn-nav {
+    text-align: center;
+    color: rgb( 255, 95, 95) !important;
+    text-decoration: none;
+    
+ background-color:white;
+    border: none;
+    font-weight: bold;
+    border-radius: 8px;
+
+}
+
+.settings {
+    background-color: rgb( 255, 95, 95);
+    color: white;
+    border-radius: 15px;
+    max-width:70rem;
+}
+#content-cont {
+    min-height: 100vh;
+}

@@ -1,0 +1,449 @@
+﻿@using Instadvert.CZ.Data.ViewModels;
+@model UserVM
+
+
+
+
+@{
+    ViewData["Title"] = "Sign up for a new account";
+}
+
+
+
+
+<section class="">
+    <div class="container">
+        <div class="col-md-5 mx-auto text-center">
+            <div class="h-100 p-5 my-5 bg-body-white ">
+                <h2> Sign up for more features</h2>
+            </div>
+        </div>
+    </div>
+
+<section class="bg-custom-gray  my-5">
+    <div class="container">
+       <div class="col-md-9 mx-auto">
+    <form asp-action="Registration" enctype="multipart/form-data">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text bg-clssc" id="basic-addon1">
+                <label class="text-white" asp-for="userRoles" class="control-label">Select role</label>
+            </span>
+            <select asp-for="SelectedRole" class="form-control">
+                <option style="display:none"> </option>
+                @foreach(var role in Model.userRoles)
+                {
+                    <option value="@role">@role</option>
+                }
+            </select>
+            <span asp-validation-for="SelectedRole" class="text-danger"></span>
+        </div>
+
+        <div id="companyForm">
+
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-clssc" id="basic-addon2">
+                    <label class="text-white" asp-for="UserName" class="control-label"></label>
+                </span>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="input-group ">
+               
+                <input type="hidden" asp-for="SelectedRole" value="Company" class="form-control" />
+                <span asp-validation-for="SelectedRole" class="text-danger"></span>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-clssc" id="basic-addon4">
+                    <label class="text-white" asp-for="Name" class="control-label"></label>
+                </span>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+                        <div class=" mt-4">
+                            <div class="row">
+                                <!-- Phone Number Prefix -->
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-clssc text-white" id="basic-addon5">
+                                            <label class="visually-hidden" asp-for="PhoneNumberPrefix"></label>
+                                        </span>
+                                        <select asp-for="PhoneNumberPrefix" id="countryPrefix" class="form-control">
+                                            <!-- Country prefixes -->
+                                            <option value="+1">United States (+1)</option>
+                                            <option value="+44">United Kingdom (+44)</option>
+                                            <option value="+33">France (+33)</option>
+                                            <option value="+49">Germany (+49)</option>
+                                            <option value="+61">Australia (+61)</option>
+                                            <option value="+43">Austria (+43)</option>
+                                            <option value="+32">Belgium (+32)</option>
+                                            <option value="+55">Brazil (+55)</option>
+                                            <option value="+359">Bulgaria (+359)</option>
+                                            <option value="+1">Canada (+1)</option>
+                                            <option value="+385">Croatia (+385)</option>
+                                            <option value="+357">Cyprus (+357)</option>
+                                            <option value="+420">Czech Republic (+420)</option>
+                                            <option value="+45">Denmark (+45)</option>
+                                            <option value="+372">Estonia (+372)</option>
+                                            <option value="+358">Finland (+358)</option>
+                                            <option value="+30">Greece (+30)</option>
+                                            <option value="+852">Hong Kong (+852)</option>
+                                            <option value="+36">Hungary (+36)</option>
+                                            <option value="+91">India (+91)</option>
+                                            <option value="+62">Indonesia (+62)</option>
+                                            <option value="+353">Ireland (+353)</option>
+                                            <option value="+39">Italy (+39)</option>
+                                            <option value="+81">Japan (+81)</option>
+                                            <option value="+254">Kenya (+254)</option>
+                                            <option value="+371">Latvia (+371)</option>
+                                            <option value="+423">Liechtenstein (+423)</option>
+                                            <option value="+370">Lithuania (+370)</option>
+                                            <option value="+352">Luxembourg (+352)</option>
+                                            <option value="+60">Malaysia (+60)</option>
+                                            <option value="+356">Malta (+356)</option>
+                                            <option value="+52">Mexico (+52)</option>
+                                            <option value="+31">Netherlands (+31)</option>
+                                            <option value="+64">New Zealand (+64)</option>
+                                            <option value="+234">Nigeria (+234)</option>
+                                            <option value="+47">Norway (+47)</option>
+                                            <option value="+48">Poland (+48)</option>
+                                            <option value="+351">Portugal (+351)</option>
+                                            <option value="+40">Romania (+40)</option>
+                                            <option value="+65">Singapore (+65)</option>
+                                            <option value="+421">Slovakia (+421)</option>
+                                            <option value="+386">Slovenia (+386)</option>
+                                            <option value="+27">South Africa (+27)</option>
+                                            <option value="+34">Spain (+34)</option>
+                                            <option value="+46">Sweden (+46)</option>
+                                            <option value="+41">Switzerland (+41)</option>
+                                            <option value="+66">Thailand (+66)</option>
+                                            <option value="+971">United Arab Emirates (+971)</option>
+                                            <option value="+233">Ghana (+233)</option>
+                                            <option value="+350">Gibraltar (+350)</option>
+                                            <option value="+60">Malaysia (+60)</option>
+                                            <option value="+234">Nigeria (+234)</option>
+                                            <option value="+381">Serbia (+381)</option>
+                                        </select>
+                                        <span asp-validation-for="PhoneNumberPrefix" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Phone Number -->
+                                <div class="col-md-8 mb-3">
+                                    <div class="input-group">
+                                       
+                                        <input  asp-for="PhoneNumber" type="number" placeholder="Phone number" class="form-control" />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-clssc" id="basic-addon7">
+                    <label class="text-white" asp-for="Email" class="control-label"></label>
+                </span>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-clssc" id="basic-addon8">
+                    <label class="text-white" asp-for="Address" class="control-label"></label>
+                </span>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-clssc" id="basic-addon9">
+                    <label class="text-white" asp-for="Description" class="control-label"></label>
+                </span>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-clssc" id="basic-addon9">
+                                <label class="text-white" asp-for="Url" class="control-label"></label>
+                            </span>
+                            <input asp-for="Url" class="form-control" />
+                            <span asp-validation-for="Url" class="text-danger"></span>
+                        </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-clssc" id="basic-addon10">
+                    <label class="text-white" asp-for="Password" class="control-label"></label>
+                </span>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+                        <p class="mb-4 border-bottom">
+                            <div class="container mt-4">
+                                <!-- Categories -->
+                                <h5>Select categories</h5>
+                                <div class="form-group">
+                                    <label class="control-label text-white">Categories</label>
+                                    <div class="checkbox">
+                                        @foreach (var option in Model.CategoryList)
+                                        {
+                                            <div class="list-items mb-3">
+                                                <input asp-for="@option.IsChecked"
+                                                       type="checkbox"
+                                                       value="@option.CategoryId"
+                                                       name="SelectedCategories"
+                                                       id="@option.CategoryId"
+                                                       checked="@option.IsChecked"
+                                                       class="form-check-input" />
+                                                <label class="cat-item ms-2" for="@option.CategoryId">
+                                                    @option.Name
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </p>
+        </div>
+              
+
+                <div id="bloggerForm">
+
+                        <!-- UserName -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-clssc text-white" id="basic-addon1">
+                                <label asp-for="UserName" class="control-label"></label>
+                            </span>
+                            <input asp-for="UserName" class="form-control" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Hidden SelectedRole -->
+                        <div class="input-group ">
+                            <input type="hidden" asp-for="SelectedRole" value="Blogger" class="form-control" />
+                            <span asp-validation-for="SelectedRole" class="text-danger"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-clssc text-white" id="basic-addon2">
+                                <label asp-for="Email" class="control-label"></label>
+                            </span>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Phone Number Prefix -->
+                        <div class=" mt-4">
+                            <div class="row">
+                                <!-- Phone Number Prefix -->
+                                <div class="col-md-4 mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-clssc text-white" id="basic-addon5">
+                                            <label class="visually-hidden" asp-for="PhoneNumberPrefix"></label>
+                                        </span>
+                                        <select asp-for="PhoneNumberPrefix" id="countryPrefix" class="form-control">
+                                            <!-- Country prefixes -->
+                                            <option value="+1">United States (+1)</option>
+                                            <option value="+44">United Kingdom (+44)</option>
+                                            <option value="+33">France (+33)</option>
+                                            <option value="+49">Germany (+49)</option>
+                                            <option value="+61">Australia (+61)</option>
+                                            <option value="+43">Austria (+43)</option>
+                                            <option value="+32">Belgium (+32)</option>
+                                            <option value="+55">Brazil (+55)</option>
+                                            <option value="+359">Bulgaria (+359)</option>
+                                            <option value="+1">Canada (+1)</option>
+                                            <option value="+385">Croatia (+385)</option>
+                                            <option value="+357">Cyprus (+357)</option>
+                                            <option value="+420">Czech Republic (+420)</option>
+                                            <option value="+45">Denmark (+45)</option>
+                                            <option value="+372">Estonia (+372)</option>
+                                            <option value="+358">Finland (+358)</option>
+                                            <option value="+30">Greece (+30)</option>
+                                            <option value="+852">Hong Kong (+852)</option>
+                                            <option value="+36">Hungary (+36)</option>
+                                            <option value="+91">India (+91)</option>
+                                            <option value="+62">Indonesia (+62)</option>
+                                            <option value="+353">Ireland (+353)</option>
+                                            <option value="+39">Italy (+39)</option>
+                                            <option value="+81">Japan (+81)</option>
+                                            <option value="+254">Kenya (+254)</option>
+                                            <option value="+371">Latvia (+371)</option>
+                                            <option value="+423">Liechtenstein (+423)</option>
+                                            <option value="+370">Lithuania (+370)</option>
+                                            <option value="+352">Luxembourg (+352)</option>
+                                            <option value="+60">Malaysia (+60)</option>
+                                            <option value="+356">Malta (+356)</option>
+                                            <option value="+52">Mexico (+52)</option>
+                                            <option value="+31">Netherlands (+31)</option>
+                                            <option value="+64">New Zealand (+64)</option>
+                                            <option value="+234">Nigeria (+234)</option>
+                                            <option value="+47">Norway (+47)</option>
+                                            <option value="+48">Poland (+48)</option>
+                                            <option value="+351">Portugal (+351)</option>
+                                            <option value="+40">Romania (+40)</option>
+                                            <option value="+65">Singapore (+65)</option>
+                                            <option value="+421">Slovakia (+421)</option>
+                                            <option value="+386">Slovenia (+386)</option>
+                                            <option value="+27">South Africa (+27)</option>
+                                            <option value="+34">Spain (+34)</option>
+                                            <option value="+46">Sweden (+46)</option>
+                                            <option value="+41">Switzerland (+41)</option>
+                                            <option value="+66">Thailand (+66)</option>
+                                            <option value="+971">United Arab Emirates (+971)</option>
+                                            <option value="+233">Ghana (+233)</option>
+                                            <option value="+350">Gibraltar (+350)</option>
+                                            <option value="+60">Malaysia (+60)</option>
+                                            <option value="+234">Nigeria (+234)</option>
+                                            <option value="+381">Serbia (+381)</option>
+                                        </select>
+                                        <span asp-validation-for="PhoneNumberPrefix" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Phone Number -->
+                                <div class="col-md-8 mb-3">
+                                    <div class="input-group">
+
+                                        <input asp-for="PhoneNumber" placeholder="Phone number" type="tel" class="form-control" />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Instagram Avatar -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-clssc text-white" id="basic-addon4">
+                                <label asp-for="Biography" class="control-label"></label>
+                            </span>
+                            <input asp-for="Biography" class="form-control" />
+                            <span asp-validation-for="Biography" class="text-danger"></span>
+                        </div>
+
+                        <!-- Instagram Avatar -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-clssc text-white" id="basic-addon4">
+                                <label asp-for="InstagramAvatar" class="control-label"></label>
+                            </span>
+                            <input asp-for="InstagramAvatar" class="form-control" />
+                            <span asp-validation-for="InstagramAvatar" class="text-danger"></span>
+                        </div>
+
+                        <!-- Instagram Followers -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-clssc text-white" id="basic-addon5">
+                                <label asp-for="InstagramFollowers" class="control-label"></label>
+                            </span>
+                            <input asp-for="InstagramFollowers" class="form-control" />
+                            <span asp-validation-for="InstagramFollowers" class="text-danger"></span>
+                        </div>
+
+                        <!-- Instagram Username -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-clssc text-white" id="basic-addon6">
+                                <label asp-for="InstagramUsername" class="control-label"></label>
+                            </span>
+                            <input asp-for="InstagramUsername" class="form-control" />
+                            <span asp-validation-for="InstagramUsername" class="text-danger"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-clssc text-white" id="basic-addon7">
+                                <label asp-for="Password" class="control-label"></label>
+                            </span>
+                            <input asp-for="Password" type="password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label asp-for="CoverPhoto" class="form-label"></label>
+                            <input asp-for="CoverPhoto" class="form-control form-control-file" id="customFile">
+                            <span asp-validation-for="CoverPhoto" class="text-danger"></span>
+                        </div>
+                        <p class="mb-4 border-bottom">
+                            <div class="container mt-4">
+                                <!-- Categories -->
+                                <h5>Select categories</h5>
+                                <div class="form-group">
+                                    <label class="control-label text-white">Categories</label>
+                                    <div class="checkbox">
+                                        @foreach (var option in Model.CategoryList)
+                                        {
+                                            <div class="list-items mb-3">
+                                                <input asp-for="@option.IsChecked"
+                                                       type="checkbox"
+                                                       value="@option.CategoryId"
+                                                       name="SelectedCategories"
+                                                       id="@option.CategoryId"
+                                                       checked="@option.IsChecked"
+                                                       class="form-check-input" />
+                                                <label class="cat-item ms-2" for="@option.CategoryId">
+                                                    @option.Name
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </p>
+                </div>
+
+               
+                <div id="create" class="form-group text-center mt-5">
+                    <input type="submit" value="Create" class="btn-chat btn-20-width mb-5 p-2" />
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+</section>
+
+
+@section Scripts {
+    <script>
+        // Function to show/hide form sections based on the selected role
+        function toggleFormSections(selectedRole) {
+            // Hide all form sections
+            document.getElementById('companyForm').style.display = 'none';
+            document.getElementById('bloggerForm').style.display = 'none';
+            document.getElementById('create').style.display = 'none';
+
+            $('#companyForm :input').prop('disabled', false);
+            $('#bloggerForm :input').prop('disabled', false);
+
+
+            // Show the relevant form section based on the selected role
+            if (selectedRole === 'Company') {
+                document.getElementById('companyForm').style.display = 'block';
+                $('#bloggerForm :input').prop('disabled', true); // Виключити всі елементи у формі компанії
+                document.getElementById('create').style.display = 'inline-block';
+            } else if (selectedRole === 'Blogger') {
+              
+                document.getElementById('bloggerForm').style.display = 'block';
+                $('#companyForm :input').prop('disabled', true); // Виключити всі елементи у формі компанії
+                document.getElementById('create').style.display = 'inline-block';
+            }
+        }
+
+        // Event listener for the role dropdown change event
+        document.getElementById('SelectedRole').addEventListener('change', function () {
+            var selectedRole = this.value;
+            toggleFormSections(selectedRole);
+        });
+
+        // Initial call to toggleFormSections to set the initial form state based on the selected role
+        toggleFormSections(document.getElementById('SelectedRole').value);
+    </script>
+   
+}

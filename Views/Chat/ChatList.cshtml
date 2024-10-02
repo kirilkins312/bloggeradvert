@@ -1,0 +1,113 @@
+﻿@using Instadvert.CZ.Data.ViewModels
+@using Microsoft.AspNetCore.Identity
+@model List<User>
+ @inject UserManager<User> UserManager
+
+
+
+
+
+    <section class="p-5">
+        
+    @if(Model.Count <= 0)
+    {
+
+        <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+            <div class="text-center">
+                <div class="alert alert-info p-4">
+                    <h1 class="display-4">No Active Chats</h1>
+                    <p class="lead">It looks like you don't have any active chats at the moment.</p>
+                    <hr>
+                    <p>Start a new conversation or wait for someone to message you. We are here when you need us!</p>
+                </div>
+              
+            </div>
+        </div>
+    }
+
+
+    @{
+        @if (User.IsInRole("Company"))
+        {
+            foreach (var item in Model.OfType<BloggerUser>())
+            {
+                var id = UserManager.GetUserId(User);
+                var unreadMessages = item.Messages.Where(x => x.SenderId != id && !x.read).ToList();
+
+                <div class="d-flex border-bottom border-top p-md-3 p-1 mb-2">
+                    <div class="bg-custom-gray chat-profile-picture h-10 align-content-center">
+                        <img class="chat-pf" src="@(string.IsNullOrEmpty(item.CoverImageUrl) ? "/images/noimage.png" : item.CoverImageUrl)" />
+                    </div>
+
+                    <div class="ps-4 align-content-center">
+                        <h4 class="m-0">@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</h4>
+                    </div>
+
+                    <div class="ms-auto align-content-center">
+                        
+                        <div id="links" class="d-md-flex d-block">
+                            @if (unreadMessages.Any())
+                            {
+                                <a class="me-2 nav-link-color" asp-action="Chat" asp-controller="Chat" asp-route-yourId="@id" asp-route-oppId="@item.Id">Unread</a>
+                            }
+                            <a class="me-2 nav-link-color" asp-controller="Account" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            <a class="me-2 nav-link-color" asp-action="Chat" asp-controller="Chat" asp-route-yourId="@id" asp-route-oppId="@item.Id">Chat</a>
+                         
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        if (User.IsInRole("Blogger"))
+        {
+            @foreach (var item in Model.OfType<CompanyUser>())
+            {
+                var id = UserManager.GetUserId(User);
+                var unreadMessages = item.Messages.Where(x => x.SenderId != id && !x.read).ToList();
+
+                
+
+
+                <div class="d-flex border-bottom border-top p-md-3 p-1 mb-2">
+                    <div class="bg-custom-gray chat-profile-picture h-10 align-content-center">
+                        <img class="chat-pf" src="~/Images/front-dev/download.png" />
+                    </div>
+
+                    <div class="ps-4  align-content-center">
+                        <h4 class="m-0">@Html.DisplayFor(modelItem => item.Name)</h4>
+                        <div class="ms-auto  align-content-center">
+                            
+                            <div id="links" class="d-md-flex d-block">
+                                @if (unreadMessages.Any())
+                                {
+                                    <a class="me-2 nav-link-color" asp-action="Chat" asp-controller="Chat" asp-route-yourId="@id" asp-route-oppId="@item.Id">Unread</a>
+
+                                }
+                                <a class="me-2 nav-link-color" asp-controller="Stripe" asp-route-bloggerId="@id" asp-route-companyId="@item.Id" asp-action="TransactionForm">Create transaction</a>
+                                <a class="me-2 nav-link-color" asp-controller="Account" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                                <a class="me-2 nav-link-color" asp-action="Chat" asp-controller="Chat" asp-route-yourId="@id" asp-route-oppId="@item.Id">Chat</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+                   
+                </div>
+            }
+        }
+
+
+
+
+    }
+
+
+
+</section>
+
+
+
+

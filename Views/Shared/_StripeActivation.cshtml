@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+
+@inject UserManager<User> UserManager
+
+
+
+@{
+    if (User.IsInRole("Blogger"))
+    {
+        string status = "none";
+        var id = UserManager.GetUserId(User);
+        var user = await UserManager.FindByIdAsync(id) as BloggerUser;
+        if (user.EmailConfirmed == true)
+        {
+            status = "verificated";
+            if (user.StripeAccCreated == true)
+            {
+                status = "created";
+                if (user.StripeAccActivated == true)
+                {
+                    status = "activated";
+                }
+            }
+        }
+        @if (status != "activated")
+        {
+            <div class="alert alert-warning text-center mb-0" role="alert">
+                <h6>
+                    Your Stripe account is not activated yet. You are not visible to other users.
+                    You can activate it  <a class="nav-link nav-link-color d-inline" asp-controller="Stripe" asp-action="StripeActivationPage" asp-route-Id="@id" method="get">here...</a>
+                </h6>
+
+
+            </div>
+        }
+    }
+   
+
+}

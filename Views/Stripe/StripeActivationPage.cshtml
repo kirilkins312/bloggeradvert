@@ -1,0 +1,313 @@
+﻿@using Instadvert.CZ.Data.ViewModels;
+@model UserVM
+
+@if (Model.StripeAccCreated == false)
+{
+    <div class="container1 px-5 py-5 mt-5">
+        <div class="left-aligned mb-5">
+            <h1 class="clr-clssc">Step 1</h1>
+            <h5>Please provide the requested data to complete the process.</h5>
+        </div>
+        <div class="right-aligned mb-5">
+            <h1 class="clr-clssc">Follow instructions</h1>
+            <h5>We will inform you of the next steps once the data is completed</h5>
+        </div>
+    </div>
+}
+
+
+@if (Model.StripeAccActivated == true)
+{
+    <div class="left-aligned m-5">
+        <h1 class="clr-clssc">Stripe account activated</h1>
+        <h5>Now you can create and accept payments</h5>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="col-md-3 alert alert-danger mx-auto">
+        <span><b>Sorry!</b> - @TempData["Error"] </span>
+    </div>
+}
+
+
+<section class="bg-custom-gray  my-5">
+
+
+
+
+
+
+
+    <div class="container">
+        <div class="col-md-9 mx-auto">
+            <form asp-action="StripeActivationPage">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+                <div id="bloggerForm">
+
+                    <div class="border-top p-5">
+                        <h3 class="mb-5">Personal Info</h3>
+
+                        <div>
+                            <!-- Identification -->
+                            <p class="mb-4 border-bottom">
+                                <h6 class="my-5 mb-2 secondary-color">Identification</h6>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-clssc" id="basic-addon1">
+                                        <label class="text-white" asp-for="FirstName" class="control-label"></label>
+                                    </span>
+                                    <input id="FirstName" asp-for="FirstName" class="form-control" />
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-clssc" id="basic-addon1">
+                                        <label class="text-white" asp-for="LastName" class="control-label"></label>
+                                    </span>
+                                    <input id="LastName" asp-for="LastName" class="form-control" />
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+                            </p>
+
+                            <!-- Address -->
+                            <p class="mb-2 mt-4 border-bottom">
+                                <h6 class="my-5 mb-2 secondary-color">Address</h6>
+                                <!-- Country Abbreviation -->
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-clssc text-white" id="basic-addon5">
+                                            <label asp-for="Country"></label>
+                                        </span>
+                                        <select asp-for="Country" id="countryPrefix" class="form-control">
+                                            <!-- Country abbreviations -->
+                                            <option value="US">United States (US)</option>
+                                            <option value="GB">United Kingdom (GB)</option>
+                                            <option value="FR">France (FR)</option>
+                                            <option value="DE">Germany (DE)</option>
+                                            <option value="AU">Australia (AU)</option>
+                                            <option value="AT">Austria (AT)</option>
+                                            <option value="BE">Belgium (BE)</option>
+                                            <option value="BR">Brazil (BR)</option>
+                                            <option value="BG">Bulgaria (BG)</option>
+                                            <option value="CA">Canada (CA)</option>
+                                            <option value="HR">Croatia (HR)</option>
+                                            <option value="CY">Cyprus (CY)</option>
+                                            <option value="CZ">Czech Republic (CZ)</option>
+                                            <option value="DK">Denmark (DK)</option>
+                                            <option value="EE">Estonia (EE)</option>
+                                            <option value="FI">Finland (FI)</option>
+                                            <option value="GR">Greece (GR)</option>
+                                            <option value="HK">Hong Kong (HK)</option>
+                                            <option value="HU">Hungary (HU)</option>
+                                            <option value="IN">India (IN)</option>
+                                            <option value="ID">Indonesia (ID)</option>
+                                            <option value="IE">Ireland (IE)</option>
+                                            <option value="IT">Italy (IT)</option>
+                                            <option value="JP">Japan (JP)</option>
+                                            <option value="KE">Kenya (KE)</option>
+                                            <option value="LV">Latvia (LV)</option>
+                                            <option value="LI">Liechtenstein (LI)</option>
+                                            <option value="LT">Lithuania (LT)</option>
+                                            <option value="LU">Luxembourg (LU)</option>
+                                            <option value="MY">Malaysia (MY)</option>
+                                            <option value="MT">Malta (MT)</option>
+                                            <option value="MX">Mexico (MX)</option>
+                                            <option value="NL">Netherlands (NL)</option>
+                                            <option value="NZ">New Zealand (NZ)</option>
+                                            <option value="NG">Nigeria (NG)</option>
+                                            <option value="NO">Norway (NO)</option>
+                                            <option value="PL">Poland (PL)</option>
+                                            <option value="PT">Portugal (PT)</option>
+                                            <option value="RO">Romania (RO)</option>
+                                            <option value="SG">Singapore (SG)</option>
+                                            <option value="SK">Slovakia (SK)</option>
+                                            <option value="SI">Slovenia (SI)</option>
+                                            <option value="ZA">South Africa (ZA)</option>
+                                            <option value="ES">Spain (ES)</option>
+                                            <option value="SE">Sweden (SE)</option>
+                                            <option value="CH">Switzerland (CH)</option>
+                                            <option value="TH">Thailand (TH)</option>
+                                            <option value="AE">United Arab Emirates (AE)</option>
+                                            <option value="GH">Ghana (GH)</option>
+                                            <option value="GI">Gibraltar (GI)</option>
+                                            <option value="RS">Serbia (RS)</option>
+                                        </select>
+                                        <span asp-validation-for="Country" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-clssc" id="basic-addon1">
+                                        <label class="text-white" asp-for="City" class="control-label"></label>
+                                    </span>
+                                    <input id="City" asp-for="City" class="form-control" />
+                                    <span asp-validation-for="City" class="text-danger"></span>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-clssc" id="basic-addon1">
+                                        <label class="text-white" asp-for="Line1" class="control-label"></label>
+                                    </span>
+                                    <input id="Line1" asp-for="Line1" class="form-control" />
+                                    <span asp-validation-for="Line1" class="text-danger"></span>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-clssc" id="basic-addon1">
+                                        <label class="text-white" asp-for="PostalCode" class="control-label"></label>
+                                    </span>
+                                    <input id="PostalCode" asp-for="PostalCode" class="form-control" />
+                                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                                </div>
+                            </p>
+
+                            <!-- Birth -->
+                            <p class="mb-2 mt-4 border-bottom">
+                                <h6 class="my-5 mb-2 secondary-color">Birth</h6>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-clssc" id="basic-addon1">
+                                        <label class="text-white" asp-for="Day" class="control-label"></label>
+                                    </span>
+                                    <input id="Day" asp-for="Day" class="form-control" />
+                                    <span asp-validation-for="Day" class="text-danger"></span>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-clssc" id="basic-addon1">
+                                        <label class="text-white" asp-for="Month" class="control-label"></label>
+                                    </span>
+                                    <input id="Month" asp-for="Month" class="form-control" />
+                                    <span asp-validation-for="Month" class="text-danger"></span>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-clssc" id="basic-addon1">
+                                        <label class="text-white" asp-for="Year" class="control-label"></label>
+                                    </span>
+                                    <input id="Year" asp-for="Year" class="form-control" />
+                                    <span asp-validation-for="Year" class="text-danger"></span>
+                                </div>
+                            </p>
+
+                            <!-- Business Details -->
+                            <p class="mb-2 mt-4 border-bottom">
+                                <h6 class="my-5 mb-2 secondary-color">Business Details</h6>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-clssc" id="basic-addon1">
+                                        <label class="text-white" asp-for="BussinessName" class="control-label"></label>
+                                    </span>
+                                    <input id="BussinessName" asp-for="BussinessName" class="form-control" />
+                                    <span asp-validation-for="BussinessName" class="text-danger"></span>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-clssc" id="basic-addon1">
+                                        <label class="text-white" asp-for="ProductDescription" class="control-label"></label>
+                                    </span>
+                                    <input id="ProductDescription" asp-for="ProductDescription" class="form-control" />
+                                    <span asp-validation-for="ProductDescription" class="text-danger"></span>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-clssc" id="basic-addon1">
+                                        <label class="text-white" asp-for="Url" class="control-label"></label>
+                                    </span>
+                                    <input id="Url" asp-for="Url" class="form-control" />
+                                    <span asp-validation-for="Url" class="text-danger"></span>
+                                </div>
+                             
+                                    <div class="col-md-8 mb-3">
+                                        <div class="input-group">
+                                            <input asp-for="SupportPhone" type="hidden" placeholder="Phone number" class="form-control" />
+                                            <span asp-validation-for="SupportPhone" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                
+
+                            </p>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn-chat px-3 py-2 my-5" />
+                        </div>
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+    </div>
+
+
+</section>
+
+@if (Model.StripeAccCreated == false)
+{
+
+    <div id="conditional-link-container" class="text-center mb-5 pb-5" style="display:none;">
+
+        <div class="left-aligned mb-5 p-1">
+            <h1 class="clr-clssc">Step 2</h1>
+            <h5>Now you can create account in Stripe</h5>
+        </div>
+
+        <a id="conditional-link" class="btn-activate mx-auto px-3 py-2 my-5" asp-controller="Stripe" asp-action="CreateUser" asp-route-id="@Model?.Id">Create account</a>
+
+
+
+    </div>
+}
+@if (Model.StripeAccCreated == true)
+{
+    @if (Model.StripeAccActivated == false)
+    {
+        <div class="p-2">
+            <div class="left-aligned mb-5 ">
+                <h1 class="clr-clssc">Step 3</h1>
+                <h5>Congratulations, you have created your Stripe account!</h5>
+            </div>
+            <div class="right-aligned mb-5 pb-5">
+                <h1 class="clr-clssc">Onboarding</h1>
+                <h5>Now, for payments accepting, we have to onboard you to our platform. </h5>
+            </div>
+            <div class="my-5 pb-5 text-center">
+                <a class="btn-activate mx-auto px-3 py-2 my-5 " asp-controller="Stripe" asp-action="ActivateAccount" asp-route-id="@Model.Id">Onboard account</a>
+
+            </div>
+        </div>
+     
+    }
+
+
+}
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all input elements by IDs
+        const fields = [
+            'FirstName', 'LastName', 'Country', 'City',
+            'Line1', 'PostalCode', 'Day', 'Month', 'Year',
+            'BussinessName', 'ProductDescription', 'Url', 'SupportPhone'
+        ];
+
+        let allFilled = true;
+
+        // Check if any of the fields is empty
+        fields.forEach(id => {
+            const input = document.getElementById(id);
+            if (input && !input.value.trim()) {
+                allFilled = false;
+            }
+        });
+
+        // Show or hide the link based on the check
+        const linkContainer = document.getElementById('conditional-link-container');
+        if (allFilled) {
+            linkContainer.style.display = 'block';
+        } else {
+            linkContainer.style.display = 'none';
+        }
+    });
+</script>

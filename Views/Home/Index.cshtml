@@ -1,0 +1,92 @@
+﻿@model User;
+
+
+@if (User.Identity.IsAuthenticated == true)
+{
+    @await Html.PartialAsync("_StripeActivation")
+}
+<section class=" p-0 pb-5 mb-md-5"> 
+    <section class="Home mb-md-5 mb-sm-0 mb-3">
+        <img class="main-img custom-rounded-bottom" src="~/Images/front-dev/img.jpg" alt="Main Image">
+        <p class="overlay-text">INSTADVERT</p>
+        <button asp-controller="Account" asp-action="Registration" class="px-md-4 py-md-2  px-3 py-1  btn-main">Join us</button>
+    </section>
+
+    <section class="About-us pt-sm-5 p-0 mx-sm-5 mx-2">
+        <div class="d-flex col-md" >
+            <h1 class="mx-5 box-4 me-auto">Find the Perfect Influencer for Your Advertising Campaign</h1>
+            <div style="max-width:800px;" class="text-md-end">
+                <h1 class="p-lg-5 pe-lg-0 p-md-3 ps-md-0 ps-5 pe-md-0 pe-4 pt-2  clr-clssc">
+                    Welcome to our platform
+                </h1>
+
+                <h3 class="ps-5 pt-1  pe-4">
+                    Place where companies and influencers meet to create successful advertising campaigns.
+                </h3>
+            </div>
+        </div>
+        <div class="text-center">
+            <form asp-controller="Home" asp-action="AboutUs">
+                <button class="btn-abt-us btn-20-width px-md-4 py-md-2  px-3 py-1 my-sm-5 mt-3">More...</button>
+            </form>
+            </div>
+       
+            
+     
+    </section>
+    <section class="About-us pt-md-5 pt-2 mx-sm-5 mx-2">
+        <div class="px-5">
+            <h1>Visit Our Blog</h1>
+            <h5>Explore the Latest in Influencer Marketing</h5>
+            <h8>Stay updated with the newest trends, tips, and insights on how to maximize your brand's reach through influencer partnerships.</h8>
+        </div>
+        <div class="px-5 text-center">
+            <form asp-controller="Home" asp-action="Blog">
+                <button class="btn-abt-us btn-20-width px-md-4 py-md-2  px-3 py-1  my-sm-5 mt-3">Find out more...</button>
+            </form>
+
+        </div>
+    </section>
+    <section class="Contact-us  pt-md-5 ">
+        <div class="p-5 cntct-us">
+            <h1>Get in Touch</h1>
+            <h5>Have questions or need assistance? Our team is here to help you every step of the way.</h5>
+            <div class="d-flex col-md">
+                <div class="cntct-info mt-md-5 mt-2 mx-sm-5 ">
+                    <h8 class="m-md-2">Wall street 45/57</h8>
+                    <div>
+                        <h8 class="m-md-2">+420 456 456 456</h8>
+                    </div>
+                  
+                    <h8 class="m-md-2">kiril.iatseniuk@icloud.com</h8>
+                    <div>
+                        <h8 class="m-md-2">Praha 190 00</h8>
+
+                    </div>
+                                    </div>
+                <div class="cntct-form mt-md-5 mt-2 ms-sm-5 mx-2 ps-5">
+                    <form>
+                        <div class="form-group mb-3">
+                          
+                            <input type="text" class="form-control" id="name" placeholder="Enter your name">
+                        </div>
+                        <div class="form-group mb-3">
+                            
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                        </div>
+                        <div class="form-group mb-3">
+                           
+                            <textarea class="form-control" id="message" rows="5" placeholder="Enter your message"></textarea>
+                        </div>
+                        <button type="submit" class="btn-abt-us px-3 py-2 ">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+   
+    
+ 
+</div>
+
+

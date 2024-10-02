@@ -1,0 +1,45 @@
+﻿@model Instadvert.CZ.Data.ViewModels.FilterVM
+
+
+<!-- Create New Link -->
+<p class="p-5">
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<!-- Search Form -->
+<div class="d-flex justify-content-center mb-4">
+    <div class="card p-3">
+        <form asp-controller="Categories" asp-action="Index" method="post" class="form-inline">
+            <h5 class="card-title">Search by Name</h5>
+            <div class="form-group mr-2">
+                <input class="form-control" type="text" name="searchString" placeholder="Name">
+            </div>
+            <button type="submit" class="btn btn-secondary m-2">Search</button>
+        </form>
+    </div>
+</div>
+
+<!-- Categories Table -->
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.CategoryList)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.CategoryId" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

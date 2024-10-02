@@ -1,0 +1,54 @@
+﻿@model Instadvert.CZ.Data.ViewModels.VerifyVM
+
+
+<form asp-action="VerifyVerificationCode">
+
+    <div class="m-5">
+        <h1 class="clr-clssc mb-4">We sent you verification code!</h1>
+        <h5 class="">Check your email</h5>
+
+
+        <div class="input-group mb-3">
+            <span class="input-group-text bg-clssc" id="basic-addon1">
+                <label class="text-white" asp-for="@Model.UserCode" class="control-label"></label>
+            </span>
+            <input id="LastName" asp-for="@Model.UserCode" class="form-control" />
+            <span asp-validation-for="@Model.UserCode" class="text-danger"></span>
+        </div>
+
+        <div class="form-group ">
+            <input type="submit" value="Submit" class="btn-chat p-2 px-3" />
+        </div>
+
+        <div class="form-group">
+
+            <input type="hidden" asp-for="@Model.Password" class="form-control" />
+
+        </div>
+        <div class="form-group">
+
+            <input type="hidden" asp-for="@Model.Email" class="form-control" />
+
+        </div>
+        <div class="form-group">
+
+            <input type="hidden" asp-for="@Model.Id" class="form-control" />
+
+        </div>
+        <div class="form-group">
+
+            <input type="hidden" asp-for="@Model.Code" class="form-control" />
+
+        </div>
+
+        <div class="form-group">
+
+            <input type="hidden" asp-for="@Model.Expiry" class="form-control" />
+
+        </div>
+
+
+    </div>
+
+
+</form>

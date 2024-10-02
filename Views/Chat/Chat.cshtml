@@ -1,0 +1,103 @@
+﻿@* @model Instadvert.CZ.Data.ViewModels.MessageVM
+
+<div class="container">
+
+    <!-- Display initial messages from the model -->
+    @if (Model.Messages != null)
+    {
+        <ul id="initialMessagesList">
+        @foreach (var item in Model.Messages)
+        {
+            if (item.SenderId == @ViewBag.SenderId)
+            {
+                <li class="message current-user" style="text-align:right; list-style-type: none;">@item.Content</li>
+            }
+            else
+            {
+                <li class="message other-user" style="text-align:left; list-style-type: none;"> @item.Content</li>
+            }
+        }
+        </ul>
+    }
+
+    <!-- List for real-time messages -->
+    <ul id="messagesList" style="list-style-type: none;">
+    </ul>
+
+    <!-- Hidden inputs for user and receiver IDs -->
+    <input type="hidden" id="userInput" value="@ViewBag.SenderId" />
+    <input type="hidden" id="receiverInput" value="@ViewBag.ReceiverId" />
+
+    <!-- Input for message text -->
+    <div class="row p-1">
+        <div class="col-1">Message</div>
+        <div class="col-5">
+            <input type="text" class="w-100" id="messageInput" />
+        </div>
+    </div>
+
+    <!-- Send button -->
+    <div class="row p-1">
+        <div class="col-6 text-end">
+            <input type="button" id="sendButton" value="Send Message" />
+        </div>
+    </div>
+
+    <!-- Separator -->
+    <div class="row p-1">
+        <div class="col-6">
+            <hr />
+        </div>
+    </div>
+
+</div>
+
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/Imported/chat.js"></script>
+
+ *@
+
+
+
+@model Instadvert.CZ.Data.ViewModels.MessageVM
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0, minimum-scale=1, maximum-scale=1">
+</head>
+<body>
+
+    <div class="card p-0 mb-2" id="chat1">
+        <div class="card-header d-flex justify-content-between align-items-center p-3 bg-clssc text-white border-bottom-0">
+            <p class="mb-0 fw-bold">Live chat</p>
+        </div>
+    </div>
+
+    <div class="row d-flex justify-content-center px-md-5">
+        <!-- Combined messages container -->
+        <div style="height: 100vh;" class="messages-container mb-2 px-md-0 px-4" id="messagesList">
+            @if (Model.Messages != null)
+            {
+                @foreach (var item in Model.Messages)
+                {
+                    <div class="d-flex @(item.SenderId == @ViewBag.SenderId ? "justify-content-end" : "justify-content-start") mb-2 mt-2">
+                        <div class="p-3 @(item.SenderId == @ViewBag.SenderId ? "ms-3 bg-light" : "bg-light")" style="border-radius: 15px; @(item.SenderId == @ViewBag.SenderId ? "background-color: rgba(57, 192, 237, .2);" : "")">
+                            <p class="message @(item.SenderId == @ViewBag.SenderId ? "current-user" : "other-user")" style="text-align:@(item.SenderId == @ViewBag.SenderId ? "right" : "left"); list-style-type: none;">@item.Content</p>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <!-- Hidden inputs for user and receiver IDs -->
+        <input type="hidden" id="userInput" value="@ViewBag.SenderId" />
+        <input type="hidden" id="receiverInput" value="@ViewBag.ReceiverId" />
+
+        <!-- Input for message text -->
+        <div class="input-group mb-3 pb-5 mb-5 px-md-0 px-4">
+            <input type="text" class="form-control" id="messageInput" aria-label="Write a message...">
+            <input type="button" id="sendButton" class="input-group-text" value="Send Message" />
+        </div>
+    </div>
+</body>
+
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/Imported/chat.js"></script>

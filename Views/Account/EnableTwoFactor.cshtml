@@ -1,0 +1,25 @@
+﻿@model User
+
+@{
+    if(Model.TwoFactorCustomEnabled == true)
+    {
+        <div class="m-5">
+            <h1 class="clr-clssc mb-4">2Factor authentication is enabled.</h1>
+            <h5 class="">Do you want to disable it?</h5>
+        </div>
+
+
+        <a class="nav-link nav-link-color ps-5" asp-route-id="@Model.Id" asp-action="EnableTwoFactorPost">Disable</a>
+    }
+    else
+    {
+
+        <div class="m-5">
+            <h1 class="clr-clssc mb-4">Secure your account!</h1>
+            <h5 class="">Enable 2Factor and stay safe.</h5>
+        </div>
+        <a class="nav-link nav-link-color ps-5" asp-route-id="@Model.Id" asp-action="EnableTwoFactorPost">Enable </a>
+        
+    }
+}
+

@@ -1,0 +1,18 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+
+
+
+
+<div class="left-aligned m-5">
+        <h1 class="clr-clssc">Congratulations!</h1>
+        <h5>Your Stripe account was created!</h5>
+    </div>
+<div class="right-aligned m-5">
+        <h1 class="clr-clssc">Follow steps</h1>
+        <h5>When you will be ready, come back to Stripe activation page. </h5>
+    </div>
+
+<div class="mt-5 pt-5 mx-auto  text-center">
+    <a class="btn-activate mx-auto px-3 py-2 my-5" asp-controller="Home" asp-action="Index">Back to main page</a>
+</div>
