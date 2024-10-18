@@ -1,4 +1,5 @@
-﻿using Instadvert.CZ.Data;
+﻿using Humanizer;
+using Instadvert.CZ.Data;
 using Instadvert.CZ.Data.Static;
 using Instadvert.CZ.Data.ViewModels;
 using Instadvert.CZ.Models;
@@ -14,6 +15,7 @@ using Stripe.Identity;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Web;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Instadvert.CZ.Controllers
 {
@@ -32,9 +34,8 @@ namespace Instadvert.CZ.Controllers
             _context = context;
             _configuration = configuration;
         }
-
-
         [HttpGet]
+        //Page where users can provide the information required to create a Stripe profile.
         public async Task<IActionResult> StripeActivationPage(string Id)
         {
 
@@ -153,6 +154,8 @@ namespace Instadvert.CZ.Controllers
 
         }
 
+
+        //Send money to blogger 
         public IActionResult CreateTransfer(int transactionId)
         {
             var transaction = _context.Transactions.FirstOrDefault(x => x.TransactionId == transactionId);
@@ -178,6 +181,7 @@ namespace Instadvert.CZ.Controllers
             return View();
         }
 
+        //List of all transactions
         public async Task<IActionResult> TransactionsList(string id)
         {
             if (id == null)
@@ -211,6 +215,8 @@ namespace Instadvert.CZ.Controllers
             return View(transactionVM);
         }
 
+
+        //Create Stripe account for user. 
         public async Task<IActionResult> CreateUser(string id)
         {
             StripeConfiguration.ApiKey = "sk_test_51PLfmeRx0bw4sYxc82lIUApyIPnhsETKhrmxjj7NWZm0tBrd5cW8iHzyVc7BJSpTrE08DybyA10W2EA0vs3SrTcd00LeefgSIp"; //right
@@ -255,12 +261,13 @@ namespace Instadvert.CZ.Controllers
                 ViewBag.SecondaryMessage = "Fill and check all required data, make sure, that there aren't empty spaces and nulls. ";
                 return View("Error");
             }
-
+            // Concatenate phone number prefix and the actual phone number.
             var phonenum = user.PhoneNumberPrefix + user.PhoneNumber;
 
             try
             {
-                // Create a new standard connected account.
+                // Create a new Stripe account for an individual user.
+                // This structure matches the Stripe API's account creation requirements.
                 var accountOptions = new AccountCreateOptions
                 {
                     BusinessProfile = new AccountBusinessProfileOptions
@@ -301,7 +308,7 @@ namespace Instadvert.CZ.Controllers
 
                 var service = new AccountService();
                 var account = await service.CreateAsync(accountOptions);
-
+                // Save the new Stripe account ID to the user and mark that the account is created.
                 user.UserStripeId = account.Id;
                 user.StripeAccCreated = true;
                 _context.Update(user);
@@ -318,6 +325,8 @@ namespace Instadvert.CZ.Controllers
                 return View("Error");
             }
         }
+
+        //Form where user can create request for money transfer and send it to specified company
         [HttpGet]
         public async Task<IActionResult> TransactionForm(string companyId, string bloggerId)
         {
@@ -344,6 +353,9 @@ namespace Instadvert.CZ.Controllers
             return View(vm);
 
         }
+
+        //Form where user can create request for money transfer and send it to specified company
+
         [HttpPost]
         public async Task<IActionResult> TransactionForm(TransactionVM model)
         {
@@ -376,7 +388,7 @@ namespace Instadvert.CZ.Controllers
 
         }
 
-
+        // This method is responsible for creating a Stripe Checkout session and redirecting the user(Company) to Stripe's payment page.
         public async Task<IActionResult> StripeCheckout(int? transactionId)
         {
             var transaction = _context.Transactions.FirstOrDefault(x => x.TransactionId == transactionId);
@@ -416,6 +428,8 @@ namespace Instadvert.CZ.Controllers
             return new StatusCodeResult(303);
 
         }
+
+        // Updating status for transaction. Status "Success" is reached after successful money transfer from company on our Stripe account. After that admin can send money to blogger.
         public async Task<IActionResult> StripeSuccess(int transactionId)
         {
             var transaction =  _context.Transactions.FirstOrDefault(x=>x.TransactionId == transactionId);   
@@ -428,6 +442,10 @@ namespace Instadvert.CZ.Controllers
 
         }
 
+
+        // Onboard account to our platform. A money transaction cannot be processed without completing onboarding. This action connecting blogger to our Stripe platform. 
+        // Action is redirecting user to Sripe page, where user accepting Terms of use etc. and confirming data that he provided earlier.
+        // After accepting account is onboarded and ready.
         public async Task<IActionResult> ActivateAccount(string? id)
         {
             StripeConfiguration.ApiKey = "sk_test_51PLfmeRx0bw4sYxc82lIUApyIPnhsETKhrmxjj7NWZm0tBrd5cW8iHzyVc7BJSpTrE08DybyA10W2EA0vs3SrTcd00LeefgSIp"; //right
@@ -455,6 +473,8 @@ namespace Instadvert.CZ.Controllers
             return Redirect(accountLink.Url);
 
         }
+
+        // Changing account status to activated
         public async Task<IActionResult> StripeActivationSuccess(string? id)
         {
             var user = await _userManager.FindByIdAsync(id) as BloggerUser;

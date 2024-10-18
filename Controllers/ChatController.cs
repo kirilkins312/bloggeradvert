@@ -211,8 +211,12 @@ namespace Instadvert.CZ.Controllers
             
 
             var chatsWithBloggers = _context.Users
-            .OfType<User>()
-                .Where(x => x.Id != user.Id && (x.Messages.Any(m => m.SenderId == user.Id || m.ReceiverId == user.Id) || _context.Messages.Any(m => m.SenderId == user.Id && m.ReceiverId == x.Id))).Include(x => x.Messages)
+            .OfType<User>() // Filters the set to only include entities of type User.
+                .Where(x => x.Id != user.Id && // Excludes the user themselves.
+                (x.Messages.Any(m => m.SenderId == user.Id || m.ReceiverId == user.Id) || // Checks if there are any messages where the user is either the sender or the receiver.
+                _context.Messages.Any(m => m.SenderId == user.Id && m.ReceiverId == x.Id))// Checks if there are any messages sent by the user to this user.
+                )
+                .Include(x => x.Messages)
                 .ToList(); // Find existing chats for user with other users, except the chat with himself.
 
             return View(chatsWithBloggers);

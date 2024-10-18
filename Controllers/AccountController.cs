@@ -69,47 +69,71 @@ namespace Instadvert.CZ.Controllers
         [HttpGet]
         public async Task<IActionResult> ChangeEmail(string Id)
         {
-            var user = await _userManager.FindByIdAsync(Id);       
-            var roles = new List<string>
-            {
-               UserRoles.Blogger,
-               UserRoles.Company
+            // Find the user by their Id using the UserManager service
+            var user = await _userManager.FindByIdAsync(Id);
 
-            };
+            // Prepare a list of possible roles for the user
+            var roles = new List<string>
+    {
+       UserRoles.Blogger,   // Blogger role
+       UserRoles.Company    // Company role
+    };
+
+            // Store the roles and the user's Id in ViewBag to pass them to the View
             ViewBag.Roles = roles;
-            ViewBag.Id = user.Id;
+            ViewBag.Id = user?.Id;
+
+            // Check if the user object is null (user not found)
             if (user == null)
             {
+                // If the user doesn't exist, display an error message
                 ViewBag.Message = "User does not exist";
                 return View("Error");
             }
+
+            // Validate if the passed Id matches the user's Id (as an additional security check)
             if (Id != user.Id)
             {
                 return NotFound();
             }
+
+            // Check if the user is in the "Blogger" role
             if (await _userManager.IsInRoleAsync(user, "Blogger"))
             {
-                var blogUser = user as BloggerUser;       
+                // Cast the user to the BloggerUser type
+                var blogUser = user as BloggerUser;
+
+                // Create a ViewModel for editing a Blogger's email
                 var editBlogVM = new UserVM()
-                {                                  
-                    Email = blogUser.Email,
-                    userRoles = roles,
-                    SelectedRole = "Blogger"
+                {
+                    Email = blogUser?.Email,   // Set the email from the BloggerUser
+                    userRoles = roles,         // Pass available roles
+                    SelectedRole = "Blogger"   // Set the selected role to Blogger
                 };
-               return View(editBlogVM);
+
+                // Return the view with the Blogger-specific ViewModel
+                return View(editBlogVM);
             }
+
+            // Check if the user is in the "Company" role
             if (await _userManager.IsInRoleAsync(user, "Company"))
             {
-                var compUser = user as CompanyUser;            
+                // Cast the user to the CompanyUser type
+                var compUser = user as CompanyUser;
+
+                // Create a ViewModel for editing a Company's email
                 var editCompVM = new UserVM()
                 {
-                    Email = compUser.Email,           
-                    userRoles = roles,
-                    SelectedRole = "Company",
-
+                    Email = compUser?.Email,   // Set the email from the CompanyUser
+                    userRoles = roles,         // Pass available roles
+                    SelectedRole = "Company"   // Set the selected role to Company
                 };
+
+                // Return the view with the Company-specific ViewModel
                 return View(editCompVM);
             }
+
+            // If the user is not found in any of the specified roles, return NotFound
             return NotFound();
         }
 
@@ -117,63 +141,80 @@ namespace Instadvert.CZ.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeEmail(string id, UserVM model)
         {
+            // Find the user by their Id using the UserManager service
             var user = await _userManager.FindByIdAsync(id);
+
+            // Check if the user object is null (user not found)
             if (user == null)
             {
-                ViewBag.Message = "User does not exist";
-                return View("Error");
+                ViewBag.Message = "User does not exist";  // Inform that the user doesn't exist
+                return View("Error");  // Return an error view
             }
+
+            // Ensure the Id passed in the request matches the user's actual Id
             if (id != user.Id)
             {
-                return NotFound();
+                return NotFound();  // Return a 404 Not Found if the Ids don't match
             }
+
+            // Check if the user is in the "Blogger" role
             if (await _userManager.IsInRoleAsync(user, "Blogger"))
             {
+                // Find the user again and cast them to BloggerUser type
                 var blogUser = await _userManager.FindByIdAsync(id) as BloggerUser;
+
+                // Update the BloggerUser's email with the new email from the form
                 blogUser.Email = model.Email;
 
                 try
                 {
+                    // Try to update the BloggerUser entity in the database
                     _context.Update(blogUser);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();  // Save changes asynchronously
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-
-                    ViewBag.Message = "Something went wrong";
-                    return View("Error");
-
-
+                    // Catch any concurrency issues that may occur during the update
+                    ViewBag.Message = "Something went wrong";  // Inform the user of an error
+                    return View("Error");  // Return an error view
                 }
-                ViewBag.Message = "Succesfully edited";
-                return View("Message");
 
-
+                // If successful, inform the user that the email was edited successfully
+                ViewBag.Message = "Successfully edited";
+                return View("Message");  // Return a success message view
             }
+
+            // Check if the user is in the "Company" role
             if (await _userManager.IsInRoleAsync(user, "Company"))
             {
+                // Find the user again and cast them to CompanyUser type
                 var companyUser = await _userManager.FindByIdAsync(id) as CompanyUser;
+
+                // Update the CompanyUser's email with the new email from the form
                 companyUser.Email = model.Email;
-                
-             
+
                 try
                 {
+                    // Try to update the CompanyUser entity in the database
                     _context.Update(companyUser);
-                    await _context.SaveChangesAsync();
-
+                    await _context.SaveChangesAsync();  // Save changes asynchronously
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    ViewBag.Message = "Something went wrong";
-                    return View("Error");
+                    // Catch any concurrency issues that may occur during the update
+                    ViewBag.Message = "Something went wrong";  // Inform the user of an error
+                    return View("Error");  // Return an error view
                 }
-                ViewBag.Message = "Succesfully edited";
-                return View("Message");
+
+                // If successful, inform the user that the email was edited successfully
+                ViewBag.Message = "Successfully edited";
+                return View("Message");  // Return a success message view
             }
+
+            // If the user is not in either role, return an error message
             ViewBag.Message = "Something went wrong";
             return View("Error");
         }
-
 
 
 
@@ -232,47 +273,61 @@ namespace Instadvert.CZ.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string UserId, string Token, string Expiry)
         {
+            // Try to parse the Expiry string into a DateTime object
             if (DateTime.TryParse(Expiry, out DateTime expiryDate))
             {
+                // Check if the link has expired by comparing expiry date to current UTC time
                 if (expiryDate < DateTime.UtcNow)
                 {
-                    ViewBag.Message = "This confirmation link has expired.";
-                    return View("Error");
+                    ViewBag.Message = "This confirmation link has expired.";  // Inform the user about expiration
+                    return View("Error");  // Return an error view
                 }
             }
-            
-                DateTime newDate = new DateTime(2024, 5, 4);
+
+            // Define a specific date (could be for comparison purposes)
+            DateTime newDate = new DateTime(2024, 5, 4);
+
+            // Check if the UserId or Token is null or if the expiry date is earlier than the predefined date
             if (UserId == null || Token == null || expiryDate < newDate)
             {
-                ViewBag.Message = "The link is Invalid or Expired";
+                ViewBag.Message = "The link is Invalid or Expired";  // Inform the user of an invalid or expired link
+                return View("Error");  // Return an error view
             }
-            //Find the User By Id
+
+            // Attempt to find the user by their UserId
             var user = await _userManager.FindByIdAsync(UserId);
+
+            // If the user does not exist, return an error view
             if (user == null)
             {
-                ViewBag.Message = "User does not exist";
-                return View("Error");
+                ViewBag.Message = "User does not exist";  // Inform that the user wasn't found
+                return View("Error");  // Return an error view
             }
-            if (user.EmailConfirmed == true)
+
+            // Check if the user's email is already confirmed
+            if (user.EmailConfirmed)
             {
-                ViewBag.Message = "Email is already confirmed";
-                return View("Error");
+                ViewBag.Message = "Email is already confirmed";  // Inform that the email was already confirmed
+                return View("Error");  // Return an error view
             }
-          
-            //Call the ConfirmEmailAsync Method which will mark the Email as Confirmed
+
+            // If the user exists and the email isn't confirmed yet, confirm the email with the provided token
             var result = await _userManager.ConfirmEmailAsync(user, Token);
+
+            // Check if the email confirmation succeeded
             if (result.Succeeded)
             {
-                ViewBag.Message = "Thank you for confirming your email";
-                return View();
+                ViewBag.Message = "Thank you for confirming your email";  // Success message after confirming the email
+                return View();  // Return a success view
             }
-            ViewBag.Message = "Email cannot be confirmed";
-            return View();
-        }
 
+            // If the confirmation failed for some reason, return an error view
+            ViewBag.Message = "Email cannot be confirmed";  // Inform that the email could not be confirmed
+            return View("Error");  // Return an error view
+        }
         //2STEPVERIFICATION/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-       
+
 
         private async Task<VerifyVM> SendVerificationCodeByEmail(string email)
         {
@@ -335,162 +390,188 @@ namespace Instadvert.CZ.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
+            // Look up the user by their email
             var user = await _userManager.FindByEmailAsync(loginVM.Email);
-            
 
+            // Check if user exists
             if (user != null)
             {
+                // Check if the user's account is deactivated
                 if (user.AccountDeactivated == true)
                 {
-                    ViewBag.Message = "User does not exist";
+                    ViewBag.Message = "User does not exist";  // Handle deactivated accounts
                     return View("Error");
                 }
+
+                // Verify the user's password
                 var passwordCheck = await _userManager.CheckPasswordAsync(user, loginVM.Password);
                 if (passwordCheck)
                 {
+                    // Check if the user's email is confirmed
                     if (user.EmailConfirmed == true)
                     {
-                        if(user.TwoFactorCustomEnabled == true)
+                        // Check if the user has Two-Factor Authentication (2FA) enabled
+                        if (user.TwoFactorCustomEnabled == true)
                         {
                             string email = user.Email;
-                            //sending code
+
+                            // Send a verification code via email for 2FA
                             var model = await SendVerificationCodeByEmail(email);
-                            // inserting data to view model which we will use for verification
+
+                            // Attach additional data (email, password) to the model used for 2FA verification
                             model.Email = email;
                             model.Password = loginVM.Password;
+
+                            // Redirect to the 2FA verification view
                             return View("VerifyVerificationCodeGet", model);
                         }
                         else
                         {
+                            // If 2FA is not enabled, proceed with password sign-in
                             var result = await _signInManager.PasswordSignInAsync(user, loginVM.Password, false, false);
                             if (result.Succeeded)
                             {
-
+                                // Login successful
                                 ViewBag.Message = "Congratulations";
-                                ViewBag.SecondaryMessage = "You are now loginned";
+                                ViewBag.SecondaryMessage = "You are now logged in";
                                 return View("Message");
                             }
 
+                            // Handle case where login fails despite correct password
                             return View("Error", ViewBag.Message = "Something went wrong, try again later");
                         }
-                          
                     }
+
+                    // Redirect to registration success view if email isn't confirmed
                     return View("RegistrationSuccessful");
                 }
+
+                // Handle wrong password scenario
                 ViewBag.Message = "Wrong credentials, try again";
-                return View(loginVM); 
+                return View(loginVM);
             }
+
+            // Handle scenario where user does not exist or credentials are incorrect
             ViewBag.Message = "Wrong credentials, try again";
             return View(loginVM);
         }
-
         public IActionResult Registration()
         {
+            // Prepare a list of roles available for the user to choose from during registration
             var roles = new List<string>
-            {
-               UserRoles.Blogger,
-               UserRoles.Company
-               
-            };
-            ViewBag.Roles = roles;
+    {
+       UserRoles.Blogger,   // Blogger role
+       UserRoles.Company    // Company role
+    };
 
-            var categories =  _context.Categories.ToList();
+            ViewBag.Roles = roles;  // Pass the roles to the view using ViewBag
+
+            // Retrieve the list of categories from the database
+            var categories = _context.Categories.ToList();
+
+            // Initialize the ViewModel that will be passed to the view
             var model = new Data.ViewModels.UserVM();
 
+            // Check if the category list contains any items
             if (categories.Count > 0)
             {
-
-                model.CategoryList = categories;
-                model.userRoles = roles;
-               
+                // Assign the retrieved categories and roles to the ViewModel
+                model.CategoryList = categories;  // Set the category list in the ViewModel
+                model.userRoles = roles;  // Set the available roles in the ViewModel
             }
             else
             {
+                // If no categories were retrieved, display an error message and return an error view
                 return View("Error", ViewBag.Message = "Something went wrong, try again later");
             }
-            
-           
+
+            // Store the category list in ViewBag for easy access in the view
             ViewBag.Categories = categories;
+
+            // Return the registration view, passing the populated ViewModel
             return View(model);
         }
-           
 
         [HttpPost]
         public async Task<IActionResult> Registration(UserVM signInVM)
         {
+            // Retrieve list of roles from the database and pass them to the view
             var roles = _context.UserRoles.ToList();
             ViewBag.Roles = roles;
 
-
+            // Check if the email provided during registration is already in use
             var user = await _userManager.FindByEmailAsync(signInVM.Email);
             if (user != null)
             {
+                // If email is already taken, display an error and redirect back to the registration page
                 TempData["Error"] = "This email is already taken";
                 return RedirectToAction("Registration");
             }
-            
-                if(signInVM.SelectedRole == "Blogger")
+
+            // Handle registration logic for the "Blogger" role
+            if (signInVM.SelectedRole == "Blogger")
+            {
+                // If a cover photo is provided, upload the image and save its URL
+                if (signInVM.CoverPhoto != null)
                 {
-                    if (signInVM.CoverPhoto != null)
-                    {
-                        string folder = "Images/cover/";
-                        signInVM.CoverImageUrl = await UploadImage(folder, signInVM.CoverPhoto);
-                    }
-
-                    var newUser = new BloggerUser()
-                    {
-                        //FullName = signInVM.FullName,
-                        Email = signInVM.Email,
-                        InstagramUsername = signInVM.InstagramUsername,
-                        //DateOfBirth = signInVM.DateOfBirth,
-                        InstagramAvatar = signInVM.InstagramAvatar,
-                        InstagramFollowers = signInVM.InstagramFollowers,
-                        //Address = signInVM.Address,
-                        UserName = signInVM.UserName,
-                        Name = signInVM.UserName,
-                        PhoneNumber =  signInVM.PhoneNumber,
-                        PhoneNumberPrefix = signInVM.PhoneNumberPrefix,
-                        CoverImageUrl = signInVM.CoverImageUrl,
-                        Biography = signInVM.Biography,
-
-                        Role = signInVM.SelectedRole,
-
-                    };
-
-
-                    foreach (var categoryId in signInVM.SelectedCategories)
-                    {
-                        var selectedCategory = _context.Categories.Find(categoryId);
-                        if (selectedCategory != null)
-                        {
-                            newUser.Categories.Add(selectedCategory);
-                        }
-                    }
-
-
-                    var newUserResponse = await _userManager.CreateAsync(newUser, signInVM.Password);
-
-                    if (newUserResponse.Succeeded)
-                    {
-
-                        await SendConfirmationEmail(newUser.Email, newUser);
-
-                        await _userManager.AddToRoleAsync(newUser, signInVM.SelectedRole);
-                        return View("RegistrationSuccessful");
-                    }
-                    else
-                    {
-                        foreach (var error in newUserResponse.Errors)
-                         {
-                            ModelState.AddModelError(string.Empty, error.Description);
-                        }
-                     }
-
-
-                    
+                    string folder = "Images/cover/";  // Define the folder where the image will be stored
+                    signInVM.CoverImageUrl = await UploadImage(folder, signInVM.CoverPhoto);  // Upload the image
                 }
-                if (signInVM.SelectedRole == "Company")
+
+                // Create a new BloggerUser object and assign the registration data to it
+                var newUser = new BloggerUser()
                 {
+                    Email = signInVM.Email,
+                    InstagramUsername = signInVM.InstagramUsername,
+                    InstagramAvatar = signInVM.InstagramAvatar,
+                    InstagramFollowers = signInVM.InstagramFollowers,
+                    UserName = signInVM.UserName,
+                    Name = signInVM.UserName,
+                    PhoneNumber = signInVM.PhoneNumber,
+                    PhoneNumberPrefix = signInVM.PhoneNumberPrefix,
+                    CoverImageUrl = signInVM.CoverImageUrl,  // Set the uploaded cover image URL
+                    Biography = signInVM.Biography,
+                    Role = signInVM.SelectedRole  // Assign the selected role to the user
+                };
+
+                // Add the selected categories to the new BloggerUser's categories
+                foreach (var categoryId in signInVM.SelectedCategories)
+                {
+                    var selectedCategory = _context.Categories.Find(categoryId);  // Find each category by its ID
+                    if (selectedCategory != null)
+                    {
+                        newUser.Categories.Add(selectedCategory);  // Add the category to the user's categories
+                    }
+                }
+
+                // Attempt to create the new BloggerUser in the database
+                var newUserResponse = await _userManager.CreateAsync(newUser, signInVM.Password);
+
+                if (newUserResponse.Succeeded)
+                {
+                    // If the user is successfully created, send a confirmation email
+                    await SendConfirmationEmail(newUser.Email, newUser);
+
+                    // Add the user to their selected role
+                    await _userManager.AddToRoleAsync(newUser, signInVM.SelectedRole);
+
+                    // Redirect to a "RegistrationSuccessful" view
+                    return View("RegistrationSuccessful");
+                }
+                else
+                {
+                    // If there are errors during creation, add them to the ModelState for validation messages
+                    foreach (var error in newUserResponse.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+            }
+
+            // Handle registration logic for the "Company" role
+            if (signInVM.SelectedRole == "Company")
+            {
+                // Create a new CompanyUser object and assign the registration data to it
                 var newUser = new CompanyUser()
                 {
                     Name = signInVM.Name,
@@ -499,42 +580,42 @@ namespace Instadvert.CZ.Controllers
                     Address = signInVM.Address,
                     UserName = signInVM.UserName,
                     PhoneNumber = signInVM.PhoneNumber,
-
-
                     PhoneNumberPrefix = signInVM.PhoneNumberPrefix,
                     Url = signInVM.Url,
-                    Role = signInVM.SelectedRole,
+                    Role = signInVM.SelectedRole  // Assign the selected role to the user
                 };
 
-
-                    foreach (var categoryId in signInVM.SelectedCategories)
+                // Add the selected categories to the new CompanyUser's categories
+                foreach (var categoryId in signInVM.SelectedCategories)
+                {
+                    var selectedCategory = _context.Categories.Find(categoryId);  // Find each category by its ID
+                    if (selectedCategory != null)
                     {
-                        var selectedCategory = _context.Categories.Find(categoryId);
-                        if (selectedCategory != null)
-                        {
-                            newUser.Categories.Add(selectedCategory);
-                        }
+                        newUser.Categories.Add(selectedCategory);  // Add the category to the user's categories
                     }
+                }
 
+                // Attempt to create the new CompanyUser in the database
+                var newUserResponse = await _userManager.CreateAsync(newUser, signInVM.Password);
 
-                    var newUserResponse = await _userManager.CreateAsync(newUser, signInVM.Password);
+                if (newUserResponse.Succeeded)
+                {
+                    // If the user is successfully created, send a confirmation email
+                    await SendConfirmationEmail(newUser.Email, newUser);
 
-                    if (newUserResponse.Succeeded)
-                    {
-                        await SendConfirmationEmail(newUser.Email, newUser);
+                    // Add the user to their selected role
+                    await _userManager.AddToRoleAsync(newUser, signInVM.SelectedRole);
 
-                        await _userManager.AddToRoleAsync(newUser, signInVM.SelectedRole);
-                    }
+                    // Redirect to a "RegistrationSuccessful" view
                     return View("RegistrationSuccessful");
                 }
-            
+            }
 
-
+            // If neither role registration succeeds, redirect to the home page
             return RedirectToAction("Index", "Home");
-
         }
 
-       
+
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -546,19 +627,25 @@ namespace Instadvert.CZ.Controllers
         /// //////////////////DISPLAYING/////////////////////////////////////////////////////////////////////
         /// </summary>
         /// <returns></returns>
-
- public async Task<IActionResult> BloggerList()
+        // Action to get the list of Bloggers along with their categories
+        public async Task<IActionResult> BloggerList()
         {
-            var categories =  _context.Categories.ToList();
+            // Fetch categories from the database
+            var categories = _context.Categories.ToList();
 
+            // If no categories are found, return a 404 error
             if (categories == null)
             {
                 return NotFound();
             }
 
+            // Initialize the ViewModel for passing data to the view
             var model = new FilterVM();
 
+            // Fetch all BloggerUsers from the database
             var blogUsersWithCategories = _context.Users.OfType<BloggerUser>().ToList();
+
+            // Load the categories for each BloggerUser
             foreach (var user in blogUsersWithCategories)
             {
                 await _context.Entry(user)
@@ -566,23 +653,33 @@ namespace Instadvert.CZ.Controllers
                         .LoadAsync();
             }
 
+            // Populate the ViewModel with the users and categories
             model.blogUsers = blogUsersWithCategories.ToList();
-            model.CategoryList = categories;    
+            model.CategoryList = categories;
 
+            // Return the populated view
             return View(model);
         }
+
+        // Action to get the list of Companies along with their categories
         public async Task<IActionResult> CompanyList()
         {
+            // Fetch categories from the database
             var categories = _context.Categories.ToList();
 
+            // If no categories are found, return a 404 error
             if (categories == null)
             {
                 return NotFound();
             }
 
+            // Initialize the ViewModel for passing data to the view
             var model = new FilterVM();
 
+            // Fetch all CompanyUsers from the database
             var compUsersWithCategories = _context.Users.OfType<CompanyUser>().ToList();
+
+            // Load the categories for each CompanyUser
             foreach (var user in compUsersWithCategories)
             {
                 await _context.Entry(user)
@@ -590,22 +687,31 @@ namespace Instadvert.CZ.Controllers
                         .LoadAsync();
             }
 
+            // Populate the ViewModel with the users and categories
             model.compUsers = compUsersWithCategories.ToList();
             model.CategoryList = categories;
 
+            // Return the populated view
             return View(model);
         }
+
+        // POST Action to handle filtered Blogger list based on user inputs
         [HttpPost]
         public async Task<IActionResult> BloggerList(FilterVM model)
         {
-            var categories = _context.Categories.ToList();            
+            // Fetch categories from the database
+            var categories = _context.Categories.ToList();
 
+            // If no categories are found, return a 404 error
             if (categories == null)
             {
                 return NotFound();
             }
 
+            // Fetch all BloggerUsers from the database
             var blogUsersWithCategories = _context.Users.OfType<BloggerUser>().ToList();
+
+            // Load the categories for each BloggerUser
             foreach (var user in blogUsersWithCategories)
             {
                 await _context.Entry(user)
@@ -613,8 +719,7 @@ namespace Instadvert.CZ.Controllers
                         .LoadAsync();
             }
 
-            ///////FILTERS////
-
+            // Apply category filter if any categories are selected
             if (model.SelectedCategories != null)
             {
                 foreach (var categoryId in model.SelectedCategories)
@@ -622,46 +727,59 @@ namespace Instadvert.CZ.Controllers
                     var selectedCategory = _context.Categories.Find(categoryId);
                     if (selectedCategory != null)
                     {
-                        blogUsersWithCategories = blogUsersWithCategories.Where(b => b.Categories.Any(c => c.CategoryId == categoryId)).ToList();
-                        //Cheking selected categories ids and filtering list
+                        blogUsersWithCategories = blogUsersWithCategories
+                            .Where(b => b.Categories.Any(c => c.CategoryId == categoryId)).ToList();  // Filter based on selected categories
                     }
                 }
             }
 
+            // Apply search string filter if provided
             if (model.searchString != null)
             {
                 model.searchString = model.searchString.ToLower();
-                //blogUsersWithCategories = blogUsersWithCategories.Where(x => x.FullName.ToLower().Contains(model.searchString)).ToList();
+                // Uncomment the next line if you want to search by full name
+                // blogUsersWithCategories = blogUsersWithCategories.Where(x => x.FullName.ToLower().Contains(model.searchString)).ToList();
             }
+
+            // Apply Instagram followers filter (upper limit)
             if (model.searchStringTop != null && model.searchStringTop != 0)
             {
                 blogUsersWithCategories = blogUsersWithCategories.Where(x => x.InstagramFollowers < model.searchStringTop).ToList();
             }
+
+            // Apply Instagram followers filter (lower limit)
             if (model.searchStringBottom != null && model.searchStringBottom != 0)
             {
                 blogUsersWithCategories = blogUsersWithCategories.Where(x => x.InstagramFollowers > model.searchStringBottom).ToList();
             }
-            ////////////////////////////////
+
+            // Update the ViewModel with filtered results and category list
             model.blogUsers = blogUsersWithCategories;
             model.CategoryList = categories;
 
             ViewBag.Categories = categories;
 
+            // Return the updated view
             return View(model);
-          
         }
-    
+
+        // POST Action to handle filtered Company list based on user inputs
         [HttpPost]
         public async Task<IActionResult> CompanyList(FilterVM model)
         {
+            // Fetch categories from the database
             var categories = _context.Categories.ToList();
 
+            // If no categories are found, return a 404 error
             if (categories == null)
             {
                 return NotFound();
             }
 
+            // Fetch all CompanyUsers from the database
             var compUsersWithCategories = _context.Users.OfType<CompanyUser>().ToList();
+
+            // Load the categories for each CompanyUser
             foreach (var user in compUsersWithCategories)
             {
                 await _context.Entry(user)
@@ -669,6 +787,7 @@ namespace Instadvert.CZ.Controllers
                         .LoadAsync();
             }
 
+            // Apply category filter if any categories are selected
             if (model.SelectedCategories != null)
             {
                 foreach (var categoryId in model.SelectedCategories)
@@ -676,36 +795,27 @@ namespace Instadvert.CZ.Controllers
                     var selectedCategory = _context.Categories.Find(categoryId);
                     if (selectedCategory != null)
                     {
-                        compUsersWithCategories = compUsersWithCategories.Where(b => b.Categories.Any(c => c.CategoryId == categoryId)).ToList();
-                        //Cheking selected categories ids and filtering list
+                        compUsersWithCategories = compUsersWithCategories
+                            .Where(b => b.Categories.Any(c => c.CategoryId == categoryId)).ToList();  // Filter based on selected categories
                     }
                 }
             }
 
-            if (model.SelectedCategories != null)
-            {
-                foreach (var categoryId in model.SelectedCategories)
-                {
-                    var selectedCategory = _context.Categories.Find(categoryId);
-                    if (selectedCategory != null)
-                    {
-                        compUsersWithCategories = compUsersWithCategories.Where(b => b.Categories.Any(c => c.CategoryId == categoryId)).ToList();
-                        //Cheking selected categories ids and filtering list
-                    }
-                }
-            }
-
+            // Apply search string filter if provided (e.g., company name)
             if (model.searchString != null)
             {
                 model.searchString = model.searchString.ToLower();
-                compUsersWithCategories = compUsersWithCategories.Where(x => x.Name.ToLower().Contains(model.searchString)).ToList();
+                compUsersWithCategories = compUsersWithCategories
+                    .Where(x => x.Name.ToLower().Contains(model.searchString)).ToList();
             }
 
+            // Update the ViewModel with filtered results and category list
             model.compUsers = compUsersWithCategories;
             model.CategoryList = categories;
 
             ViewBag.Categories = categories;
 
+            // Return the updated view
             return View(model);
         }
 
@@ -715,142 +825,155 @@ namespace Instadvert.CZ.Controllers
         /// <param name="Id"></param>
         /// <returns></returns>
 
-        
+
         public async Task<IActionResult> EnableTwoFactor(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             return View(user);
         }
-       
+
         public async Task<IActionResult> EnableTwoFactorPost(string id)
         {
+            // Find the user by their ID
             var user = await _userManager.FindByIdAsync(id);
 
-            if(user.TwoFactorCustomEnabled == true)
-            { 
+            // Check if two-factor authentication (2FA) is currently enabled for the user
+            if (user.TwoFactorCustomEnabled == true)
+            {
+                // If 2FA is enabled, disable it
                 user.TwoFactorCustomEnabled = false;
-                ViewBag.Message = "Two factor authentication disabled";
+                ViewBag.Message = "Two-factor authentication disabled";
 
                 try
                 {
+                    // Update the user's 2FA status in the database
                     _context.Update(user);
-                    await _context.SaveChangesAsync();
-
+                    await _context.SaveChangesAsync();  // Save the changes asynchronously
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-
+                    // If there's an issue with saving the changes, return a 404 Not Found error
                     return NotFound();
-
-
                 }
+
+                // If something went wrong, return an error view
                 return View("Error");
             }
+
+            // Check if two-factor authentication is currently disabled
             if (user.TwoFactorCustomEnabled == false)
             {
+                // If 2FA is disabled, enable it
                 user.TwoFactorCustomEnabled = true;
 
                 try
                 {
+                    // Update the user's 2FA status in the database
                     _context.Update(user);
-                    await _context.SaveChangesAsync();
-
+                    await _context.SaveChangesAsync();  // Save the changes asynchronously
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-
+                    // If there's an issue with saving the changes, return a 404 Not Found error
                     return NotFound();
-
-
                 }
-                ViewBag.Message = "Two factor authentication enabled";
+
+                // 2FA was successfully enabled, update the message
+                ViewBag.Message = "Two-factor authentication enabled";
+
+                // Return the error view to notify about the update (should likely be a success page)
                 return View("Error");
             }
 
-          
-           return RedirectToAction("Home","Index");
-            
+            // If no changes were made, redirect to the Home page (in case of incorrect input)
+            return RedirectToAction("Home", "Index");
         }
-
         [HttpGet]
         public async Task<IActionResult> Edit(string Id)
         {
             ////////////////////////////////////////////////////////////ROLES
 
+            // Retrieve the user by their ID from the UserManager
             var user = await _userManager.FindByIdAsync(Id);
 
+            // Fetch all categories and add them to the ViewBag for use in the view
             var categories = _context.Categories.ToList();
             ViewBag.Categories = categories;
-            ViewBag.Id = user.Id;
-            var roles = new List<string>
-            {
-               UserRoles.Blogger,
-               UserRoles.Company
+            ViewBag.Id = user.Id; // Store the user ID in ViewBag
 
-            };
+            // Prepare available roles (Blogger, Company) for the view
+            var roles = new List<string>
+    {
+       UserRoles.Blogger,
+       UserRoles.Company
+    };
             ViewBag.Roles = roles;
-            if(user == null)
+
+            // Handle the case where the user does not exist
+            if (user == null)
             {
                 ViewBag.Message = "User does not exist";
                 return View("Error");
             }
 
+            // Check if the passed ID matches the user ID
             if (Id != user.Id)
             {
                 return NotFound();
             }
 
+            // Check if the user is in the "Blogger" role
             if (await _userManager.IsInRoleAsync(user, "Blogger"))
             {
-
+                // Cast the user to BloggerUser and load their categories
                 var blogUser = user as BloggerUser;
                 await _context.Entry(blogUser).Collection(b => b.Categories).LoadAsync();
+
                 var bloggersCategories = blogUser.Categories;
 
+                // Mark the selected categories for the blogger in the UI
                 foreach (var category in categories)
                 {
                     category.IsChecked = bloggersCategories.Any(x => x.CategoryId == category.CategoryId);
                 }
 
+                // Map the BloggerUser data to the UserVM for editing
                 var editBlogVM = new UserVM()
                 {
-                    Id= blogUser.Id,
-                    
+                    Id = blogUser.Id,
                     UserName = blogUser.UserName,
                     CategoryList = categories,
-                    //FullName = blogUser.FullName,
                     Email = blogUser.Email,
                     PhoneNumber = blogUser.PhoneNumber,
                     PhoneNumberPrefix = blogUser.PhoneNumberPrefix,
-                    //Address = blogUser.Address,
-                    //DateOfBirth = blogUser.DateOfBirth,
                     InstagramAvatar = blogUser.InstagramAvatar,
                     InstagramFollowers = blogUser.InstagramFollowers,
                     InstagramUsername = blogUser.InstagramUsername,
                     Biography = blogUser.Biography,
-
-                    Role= blogUser.Role,
+                    Role = blogUser.Role,
                     SelectedRole = "Blogger"
-
                 };
 
+                // Return the view for editing the BloggerUser
                 return View(editBlogVM);
-
             }
 
-
+            // Check if the user is in the "Company" role
             if (await _userManager.IsInRoleAsync(user, "Company"))
             {
+                // Cast the user to CompanyUser and load their categories
                 var compUser = user as CompanyUser;
                 await _context.Entry(compUser).Collection(b => b.Categories).LoadAsync();
 
                 var companiesCategories = compUser.Categories;
 
+                // Mark the selected categories for the company in the UI
                 foreach (var category in categories)
                 {
                     category.IsChecked = companiesCategories.Any(x => x.CategoryId == category.CategoryId);
                 }
 
+                // Map the CompanyUser data to the UserVM for editing
                 var editCompVM = new UserVM()
                 {
                     Id = compUser.Id,
@@ -864,69 +987,59 @@ namespace Instadvert.CZ.Controllers
                     Role = compUser.Role,
                     SelectedRole = "Company",
                     CategoryList = categories,
-                    Url = compUser.Url,
+                    Url = compUser.Url
                 };
-            
 
+                // Return the view for editing the CompanyUser
                 return View(editCompVM);
-
             }
 
+            // If the user is neither Blogger nor Company, return a 404 error
             return NotFound();
-
-
-
         }
 
-   
-
-        // POST: Bloggers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Handle form submission for updating the user data
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, UserVM model)
         {
-
             var user = await _userManager.FindByIdAsync(id);
             ViewBag.Id = model.Id;
+
+            // Handle the case where the user does not exist
             if (user == null)
             {
                 ViewBag.Message = "User does not exist";
                 return View("Error");
             }
 
-           
-
+            // Check if the passed ID matches the user ID
             if (id != user.Id)
             {
                 return NotFound();
             }
 
+            // Update the BloggerUser details if the user is a Blogger
             if (await _userManager.IsInRoleAsync(user, "Blogger"))
             {
                 var blogUser = await _userManager.FindByIdAsync(id) as BloggerUser;
 
                 if (blogUser != null)
                 {
-                    await _context.Entry(blogUser)
-                        .Collection(u => u.Categories)
-                        .LoadAsync();
+                    await _context.Entry(blogUser).Collection(u => u.Categories).LoadAsync();
                 }
 
+                // Update the BloggerUser fields from the submitted form model
                 blogUser.UserName = model.UserName;
-                //blogUser.FullName = model.FullName;
                 blogUser.PhoneNumberPrefix = model.PhoneNumberPrefix;
                 blogUser.PhoneNumber = model.PhoneNumber;
-                //blogUser.Address = model.Address;
-                //blogUser.DateOfBirth = model.DateOfBirth;
                 blogUser.InstagramAvatar = model.InstagramAvatar;
                 blogUser.InstagramFollowers = model.InstagramFollowers;
                 blogUser.InstagramUsername = model.InstagramUsername;
                 blogUser.Biography = model.Biography;
 
+                // Clear and update the Blogger's categories
                 blogUser.Categories.Clear();
-
                 foreach (var categoryId in model.SelectedCategories)
                 {
                     var category = _context.Categories.Find(categoryId);
@@ -934,38 +1047,35 @@ namespace Instadvert.CZ.Controllers
                     {
                         blogUser.Categories.Add(category);
                     }
-                }           
-                    try
-                    {
-                        _context.Update(blogUser);
-                        await _context.SaveChangesAsync();
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
+                }
 
+                // Save changes and handle errors
+                try
+                {
+                    _context.Update(blogUser);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
                     ViewBag.Message = "Something went wrong";
                     return View("Error");
-
-
                 }
-                ViewBag.Message = "Succesfully edited";
+
+                ViewBag.Message = "Successfully edited";
                 return View("Message");
-
-
             }
+
+            // Update the CompanyUser details if the user is a Company
             if (await _userManager.IsInRoleAsync(user, "Company"))
             {
                 var companyUser = await _userManager.FindByIdAsync(id) as CompanyUser;
 
                 if (companyUser != null)
                 {
-                    await _context.Entry(companyUser)
-                        .Collection(u => u.Categories)
-                        .LoadAsync();
+                    await _context.Entry(companyUser).Collection(u => u.Categories).LoadAsync();
                 }
 
-                
-
+                // Update the CompanyUser fields from the submitted form model
                 companyUser.UserName = model.UserName;
                 companyUser.Name = model.Name;
                 companyUser.PhoneNumberPrefix = model.PhoneNumberPrefix;
@@ -973,8 +1083,9 @@ namespace Instadvert.CZ.Controllers
                 companyUser.Address = model.Address;
                 companyUser.Description = model.Description;
                 companyUser.Url = model.Url;
-                companyUser.Categories.Clear();
 
+                // Clear and update the Company's categories
+                companyUser.Categories.Clear();
                 foreach (var categoryId in model.SelectedCategories)
                 {
                     var category = _context.Categories.Find(categoryId);
@@ -983,6 +1094,8 @@ namespace Instadvert.CZ.Controllers
                         companyUser.Categories.Add(category);
                     }
                 }
+
+                // Save changes and handle errors
                 try
                 {
                     _context.Update(companyUser);
@@ -990,33 +1103,27 @@ namespace Instadvert.CZ.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-
                     ViewBag.Message = "Something went wrong";
                     return View("Error");
-
-
                 }
-                ViewBag.Message = "Succesfully edited";
+
+                ViewBag.Message = "Successfully edited";
                 return View("Message");
-
-
             }
+
             ViewBag.Message = "Something went wrong";
             return View("Error");
         }
-           
-            public IActionResult Deactivate(string id)
-            {
 
+        // Method to display the Deactivate view
+        public IActionResult Deactivate(string id)
+        {
             return View("Deactivate", id);
-            }
-
-
-
+        }
         public async Task<IActionResult> DeactivateConfirmed(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            //First Fetch the User you want to Delete
+            // First, fetch the user you want to deactivate
 
             if (user == null)
             {
@@ -1026,201 +1133,190 @@ namespace Instadvert.CZ.Controllers
             }
             else if (user.AccountDeactivated == true)
             {
-                // Handle the case where the user wasn't found
+                // Handle the case where the account is already deactivated
                 ViewBag.Message = "Account is already deactivated.";
                 return View("Error");
             }
-           
 
-                if (user != null)
+            if (user != null)
+            {
+                // Check if the user is a Blogger
+                if (await _userManager.IsInRoleAsync(user, "Blogger"))
                 {
-                    if (await _userManager.IsInRoleAsync(user, "Blogger"))
-                    {
-                        ///DELETE USELESS INFO
-
-                        var blogUser = await _userManager.FindByIdAsync(id) as BloggerUser;
-                        blogUser.InstagramAvatar = "";
-                        blogUser.InstagramFollowers = 0;
-                        blogUser.InstagramUsername = "";
-                        //blogUser.Address = "";
-                        blogUser.EmailConfirmed = false;
-                        DeleteFile(blogUser.CoverImageUrl);
-                        blogUser.CoverImageUrl = "";
+                    // Clear sensitive or irrelevant information for the Blogger user
+                    var blogUser = await _userManager.FindByIdAsync(id) as BloggerUser;
+                    blogUser.InstagramAvatar = "";
+                    blogUser.InstagramFollowers = 0;
+                    blogUser.InstagramUsername = "";
+                    // Clear additional fields that are not necessary anymore
+                    blogUser.EmailConfirmed = false; // Mark email as unconfirmed
+                    DeleteFile(blogUser.CoverImageUrl); // Delete user's cover image file
+                    blogUser.CoverImageUrl = "";
                     blogUser.Biography = "";
-                    blogUser.BussinessName= "";
-                    blogUser.City= "";
+                    blogUser.BussinessName = "";
+                    blogUser.City = "";
                     blogUser.Country = "";
-                    blogUser.Day= null;
-                    blogUser.FirstName= "";
+                    blogUser.Day = null;
+                    blogUser.FirstName = "";
                     blogUser.LastName = "";
                     blogUser.Line1 = "";
-                    blogUser.Month= null;
-                    blogUser.PostalCode= null;
+                    blogUser.Month = null;
+                    blogUser.PostalCode = null;
                     blogUser.ProductDescription = "";
                     blogUser.Url = "";
                     blogUser.Year = null;
 
+                    // Mark the account as deactivated
                     blogUser.AccountDeactivated = true;
-                        blogUser.DeactivatedAt = DateTime.Now;
+                    blogUser.DeactivatedAt = DateTime.Now;
 
-                        _context.Update(blogUser);
-                        await _context.SaveChangesAsync();
-                        if (user.Id == User.Identity.GetUserId())
-                        {
-                            await _signInManager.SignOutAsync();
-                        }
-                    }
-                    else if (await _userManager.IsInRoleAsync(user, "Company"))
+                    // Update the user in the database
+                    _context.Update(blogUser);
+                    await _context.SaveChangesAsync();
+
+                    // Sign out the user if they are the currently logged-in user
+                    if (user.Id == User.Identity.GetUserId())
                     {
-                    ///DELETE USELESS INFO
-                    var compUser = await _userManager.FindByIdAsync(id) as CompanyUser;
-                        compUser.Description = "";
-                        compUser.Address = "";
-                        compUser.PhoneNumber = "";
-                        compUser.EmailConfirmed = false;
-                        compUser.Url = "";
-                        compUser.AccountDeactivated = true;
-                        compUser.DeactivatedAt = DateTime.Now;
-
-                        _context.Update(compUser);
-                        await _context.SaveChangesAsync();
-                        if (user.Id == User.Identity.GetUserId())
-                        {
-                            await _signInManager.SignOutAsync();
-                        }
+                        await _signInManager.SignOutAsync();
                     }
-                    
-
-
                 }
+                // Check if the user is a Company
+                else if (await _userManager.IsInRoleAsync(user, "Company"))
+                {
+                    // Clear sensitive or irrelevant information for the Company user
+                    var compUser = await _userManager.FindByIdAsync(id) as CompanyUser;
+                    compUser.Description = "";
+                    compUser.Address = "";
+                    compUser.PhoneNumber = "";
+                    compUser.EmailConfirmed = false; // Mark email as unconfirmed
+                    compUser.Url = "";
+                    compUser.AccountDeactivated = true;
+                    compUser.DeactivatedAt = DateTime.Now;
 
-                ViewBag.Message = "Succesfully deactivated";
-                return View("Message");
-            
+                    // Update the user in the database
+                    _context.Update(compUser);
+                    await _context.SaveChangesAsync();
+
+                    // Sign out the user if they are the currently logged-in user
+                    if (user.Id == User.Identity.GetUserId())
+                    {
+                        await _signInManager.SignOutAsync();
+                    }
+                }
+            }
+
+            ViewBag.Message = "Successfully deactivated";
+            return View("Message");
         }
 
-        
-
+        // GET: Confirm deletion of a user account
         public IActionResult Delete(string id)
         {
-
             return View("Delete", id);
         }
+
+        // POST: Confirm deletion of a user account
         public async Task<IActionResult> DeleteConfirmed(string id)
-            {
-            
+        {
             var user = await _userManager.FindByIdAsync(id);
-                if (user == null)
-                {
-                     ViewBag.Message = "Can not delete this account yet. Deactivate it.";
-                     return View("Error");
-                }
-                  //var sixMonthsAgo = DateTime.UtcNow.AddMonths(-6); ///// change to -6 or smaller
-
-
-            if(user.AccountDeactivated == false)
+            if (user == null)
             {
                 ViewBag.Message = "Can not delete this account yet. Deactivate it.";
                 return View("Error");
             }
+
+            // Ensure the account is deactivated before deletion
+            if (user.AccountDeactivated == false)
+            {
+                ViewBag.Message = "Can not delete this account yet. Deactivate it.";
+                return View("Error");
+            }
+
             if (user.DeactivatedAt == null)
             {
                 ViewBag.Message = "Can not delete this account yet. Deactivate it.";
-                 return View("Error");
+                return View("Error");
             }
-            //if (user.DeactivatedAt.Value <= sixMonthsAgo)
-            //{
 
-            //First Fetch the User you want to Delete
-
-
-
+            // Remove associated transactions for the user
             var transactions = _context.Transactions.Where(x => x.TransactionCompanyUserId == id).ToList();
-            foreach(var item in transactions)
+            foreach (var item in transactions)
             {
-
-                item.TransactionCompanyUserId = id;
-                item.Blogger = null;
-                
+                item.TransactionCompanyUserId = id; // Clear the reference to the user
+                item.Blogger = null; // Clear the blogger reference if necessary
             }
 
+            // Remove messages sent by the user
+            var messagesSent = _context.Messages.Where(m => m.SenderId == user.Id).ToList();
+            foreach (var message in messagesSent)
+            {
+                _context.Messages.Remove(message);
+            }
 
-            var messagesSent =  _context.Messages.Where(m => m.SenderId == user.Id).ToList();
-                    foreach (var message in messagesSent)
-                    {
-                       _context.Messages.Remove(message);
-                    }
+            // Remove relationships where the user is the receiver
+            var messagesReceived = _context.Messages.Where(m => m.ReceiverId == user.Id).ToList();
+            foreach (var message in messagesReceived)
+            {
+                _context.Messages.Remove(message);
+            }
 
-                    // Remove relationships where the user is the receiver
-                    var messagesReceived =  _context.Messages.Where(m => m.ReceiverId == user.Id).ToList();
-                    foreach (var message in messagesReceived)
-                    {
-                    _context.Messages.Remove(message);
-                }
-
-                    var result = await _userManager.DeleteAsync(user);
-                    if (result.Succeeded)
-                    {
-                        if(user.Id == User.Identity.GetUserId())
+            // Attempt to delete the user
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                // Sign out the user if they are the currently logged-in user
+                if (user.Id == User.Identity.GetUserId())
                 {
                     await _signInManager.SignOutAsync();
                 }
-                        
-                        // Handle a successful delete
-                        return View("DeleteConfirmed");
-                    }
-                    else
-                    {
-                        // Handle failure
-                        foreach (var error in result.Errors)
-                        {
-                            ModelState.AddModelError("", error.Description);
-                        }
-                    }
-                    return View();
-                
-            //}
 
-           
-
-        }
-
-        public async Task<IActionResult> Details(string id)
+                // Handle a successful delete
+                return View("DeleteConfirmed");
+            }
+            else
             {
+                // Handle failure by adding errors to the ModelState
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
 
-            if(id == null)
+            return View();
+        }
+        public async Task<IActionResult> Details(string id)
+        {
+            // Check if the user ID is null
+            if (id == null)
             {
                 ViewBag.Message = "User does not exist";
                 return View("Error");
             }
 
+            // Fetch the user by ID
             var user = await _userManager.FindByIdAsync(id);
 
-
-
+            // Initialize the model to hold user details
             var model = new UserVM()
             {
                 TwoFactorCustomEnabled = user.TwoFactorCustomEnabled,
                 AccountDeactivated = user.AccountDeactivated,
                 DeactivatedAt = user.DeactivatedAt,
-               
-                
             };
 
-            
-
-
+            // If user is not found, redirect to the Index page with an error message
             if (user == null)
             {
-                TempData["Error"] = "User doesnt exist";
-                RedirectToAction("Index", "Home");
+                TempData["Error"] = "User doesn't exist";
+                return RedirectToAction("Index", "Home");
             }
-            
 
+            // Handle Blogger users
             if (await _userManager.IsInRoleAsync(user, "Blogger"))
             {
                 var blogUser = await _userManager.FindByIdAsync(id) as BloggerUser;
 
+                // Populate model with Blogger user details
                 model.Id = blogUser.Id;
                 model.SelectedRole = "Blogger";
                 model.Name = blogUser.Name;
@@ -1246,8 +1342,8 @@ namespace Instadvert.CZ.Controllers
                 model.Description = blogUser.Biography;
                 model.PhoneNumber = blogUser.PhoneNumberPrefix + blogUser.PhoneNumber;
                 model.Email = blogUser.Email;
-                
 
+                // Load the categories associated with the Blogger user
                 if (blogUser != null)
                 {
                     _context.Entry(blogUser)
@@ -1255,12 +1351,14 @@ namespace Instadvert.CZ.Controllers
                         .Load();
                 }
                 model.CategoryList = blogUser.Categories;
-
             }
+
+            // Handle Company users
             if (await _userManager.IsInRoleAsync(user, "Company"))
             {
                 var compUser = await _userManager.FindByIdAsync(id) as CompanyUser;
 
+                // Populate model with Company user details
                 model.Id = compUser.Id;
                 model.SelectedRole = "Company";
                 model.Name = compUser.Name;
@@ -1270,85 +1368,66 @@ namespace Instadvert.CZ.Controllers
                 model.Email = compUser.Email;
                 model.Url = compUser.Url;
 
+                // Load the categories associated with the Company user
                 if (compUser != null)
                 {
                     _context.Entry(compUser)
-                      .Collection(u => u.Categories)
-                      .Load();
+                        .Collection(u => u.Categories)
+                        .Load();
                 }
                 model.CategoryList = compUser.Categories;
-
             }
 
             return View(model);
         }
 
-
+        // Method to upload an image to a specified folder
         private async Task<string> UploadImage(string folderPath, IFormFile file)
         {
+            // Create a unique file path with a GUID to prevent name clashes
             folderPath += Guid.NewGuid().ToString() + "_" + file.FileName;
 
+            // Combine the folder path with the web root path to get the full path
             string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folderPath);
 
+            // Copy the uploaded file to the server
             await file.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
 
+            // Return the path for later use
             return "/" + folderPath;
         }
+
+        // Action to delete a file
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteFile(string file)
         {
+            // Define the directory where cover images are stored
             string fileDirectory = Path.Combine(
                       Directory.GetCurrentDirectory(), "wwwroot/Images/cover");
             ViewBag.fileList = Directory
                 .EnumerateFiles(fileDirectory, "*", SearchOption.AllDirectories)
                 .Select(Path.GetFileName);
             ViewBag.fileDirectory = fileDirectory;
-            string webRootPath = _webHostEnvironment.WebRootPath;
-            var fileName = "";
-            fileName = file;
-            var fullPath = webRootPath + "/Images/cover/" + file;
 
+            // Construct the full path of the file to delete
+            string webRootPath = _webHostEnvironment.WebRootPath;
+            var fileName = file; // Store the filename for later use
+            var fullPath = Path.Combine(webRootPath, "Images/cover", file);
+
+            // Check if the file exists and delete it
             if (System.IO.File.Exists(fullPath))
             {
-                System.IO.File.Delete(fullPath);
-                ViewBag.deleteSuccess = "true";
+                System.IO.File.Delete(fullPath); // Delete the file
+                ViewBag.deleteSuccess = "true"; // Indicate successful deletion
             }
+
+            // Redirect to the DeactivateConfirmed action after deletion
             return RedirectToAction("DeactivateConfirmed");
         }
 
 
 
-        /////MANUALLY CONFRIM EMAIL///////////////////
-        //public async Task<IActionResult> Conf(string UserId)
-        //{
-        //    var user = await _userManager.FindByIdAsync(UserId);
-        //    //Generate the Token
-        //    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-           
-            
-        //    //Find the User By Id
-          
-        //    if (user == null)
-        //    {
-        //        ViewBag.ErrorMessage = $"The User ID {UserId} is Invalid";
-        //        return View("NotFound");
-        //    }
-        //    //Call the ConfirmEmailAsync Method which will mark the Email as Confirmed
-        //    var result = await _userManager.ConfirmEmailAsync(user, token);
-        //    if (result.Succeeded)
-        //    {
-        //        ViewBag.Message = "Thank you for confirming your email";
-        //        return View();
-        //    }
-        //    ViewBag.Message = "Email cannot be confirmed";
-        //    return View();
-        //}
-
-        //public IActionResult TEST()
-        //{
-        //    return View();
-        //}
 
     }
 

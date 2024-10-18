@@ -12,6 +12,7 @@ namespace Instadvert.CZ.Data.Services
             _configuration = configuration;
         }
         
+        // Sending email 
         public Task SendEmailAsync(string ToEmail, string Subject, string Body, bool IsBodyHtml = false)
         {
             string mail = "";
